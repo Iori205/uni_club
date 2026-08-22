@@ -20,23 +20,9 @@ export const metadata: Metadata = {
   title: "БСОН — Бизнесийн сургуулийн оюутны нэгдэл | МУИС",
   description:
     "МУИС-ийн Бизнесийн сургуулийн оюутны нэгдэл. Судалгаа, манлайлал, мэргэжлийн туршлага дээр суурилсан оюутны байгууллага.",
-  generator: "v0.app",
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/images/logo.png",
+    apple: "/images/logo.png",
   },
 };
 

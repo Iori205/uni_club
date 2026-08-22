@@ -63,7 +63,7 @@ export function AboutSection() {
           {FEATURES.map((feature) => (
             <article
               key={feature.title}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+              className="rounded-2xl border border-border bg-card py-3 px-4 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="flex size-11 items-center justify-center rounded-xl bg-accent">
                 <feature.icon

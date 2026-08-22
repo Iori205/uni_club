@@ -1,9 +1,10 @@
 import { cn } from "../../lib/utils";
+import Image from "next/image";
 
 export function BsonLogo({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div className="flex size-10 items-center justify-center">
+      {/* <div className="flex size-10 items-center justify-center">
         <svg
           viewBox="0 0 40 44"
           fill="none"
@@ -35,7 +36,14 @@ export function BsonLogo({ className }: { className?: string }) {
             B
           </text>
         </svg>
-      </div>
+      </div> */}
+      <Image
+        src="/images/logo.png"
+        alt="БСОН logo"
+        width={32}
+        height={32}
+        className="h-9 w-8 rounded-sm"
+      />
       <div className="flex flex-col leading-none">
         <span className="font-serif text-base font-bold tracking-tight text-foreground">
           БСОН
