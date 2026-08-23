@@ -7,7 +7,6 @@ import {
   FolderKanban,
   Globe2,
   LayoutDashboard,
-  Menu,
   Search,
   Settings,
   Users,
