@@ -14,6 +14,7 @@ const nav = [
   { id: "dashboard", label: "Хянах самбар", icon: LayoutDashboard },
   { id: "news", label: "Мэдээ", icon: FilePenLine },
   { id: "activities", label: "Үйл ажиллагаа", icon: CalendarDays },
+  { id: "events", label: "Арга хэмжээ", icon: CalendarDays },
   { id: "homepage", label: "Нүүр хуудас", icon: Home },
   { id: "settings", label: "Тохиргоо", icon: Settings },
 ] as const;

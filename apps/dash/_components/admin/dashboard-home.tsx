@@ -1,6 +1,21 @@
 "use client";
-import { CalendarDays, FilePenLine, Globe2, Pencil, Plus } from "lucide-react";
+import {
+  CalendarDays,
+  FilePenLine,
+  Globe2,
+  Pencil,
+  Plus,
+  type LucideIcon,
+} from "lucide-react";
 import type { ContentItem, Section } from "../../lib/admin/types";
+
+const stats: { label: string; value: string; icon: LucideIcon }[] = [
+  { label: "Нийт контент", value: "128", icon: Globe2 },
+  { label: "Нийтлэгдсэн", value: "96", icon: FilePenLine },
+  { label: "Ноорог", value: "32", icon: Pencil },
+  { label: "Энэ сарын мэдээ", value: "18", icon: CalendarDays },
+];
+
 export function DashboardHome({
   news,
   onCreate,
@@ -31,21 +46,16 @@ export function DashboardHome({
         </button>
       </div>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {[
-          ["Нийт контент", "128", Globe2],
-          ["Нийтлэгдсэн", "96", FilePenLine],
-          ["Ноорог", "32", Pencil],
-          ["Энэ сарын мэдээ", "18", CalendarDays],
-        ].map(([label, value, Icon]) => (
+        {stats.map(({ label, value, icon: Icon }) => (
           <div
-            key={label as string}
+            key={label}
             className="rounded-xl border border-border bg-card p-5"
           >
             <div className="flex items-start justify-between">
-              <p className="text-sm text-muted-foreground">{label as string}</p>
+              <p className="text-sm text-muted-foreground">{label}</p>
               <Icon size={18} className="text-primary" />
             </div>
-            <p className="mt-4 text-3xl font-semibold">{value as string}</p>
+            <p className="mt-4 text-3xl font-semibold">{value}</p>
           </div>
         ))}
       </div>

@@ -1,4 +1,4 @@
-import type { ContentItem } from "./types";
+import type { ContentItem, EventItem } from "./types";
 export const imagePool = [
   "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=160&q=80",
   "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=160&q=80",
@@ -13,6 +13,8 @@ export const initialNews: ContentItem[] = [
     date: "2024.06.18",
     status: "Нийтлэгдсэн",
     image: "#",
+    alt: "Сургалтын мэдээний зураг",
+    body: "Бизнесийн сургуулийн шинэ хөтөлбөрийн танилцуулга.",
   },
   {
     id: 2,
@@ -21,6 +23,8 @@ export const initialNews: ContentItem[] = [
     date: "2024.06.15",
     status: "Нийтлэгдсэн",
     image: "#",
+    alt: "Элсэлтийн мэдээний зураг",
+    body: "Магистрын хөтөлбөрийн элсэлт эхэллээ.",
   },
   {
     id: 3,
@@ -29,6 +33,8 @@ export const initialNews: ContentItem[] = [
     date: "2024.06.07",
     status: "Ноорог",
     image: "#",
+    alt: "Түншлэлийн уулзалтын зураг",
+    body: "Олон улсын түншлэлийн уулзалтын тойм.",
   },
   {
     id: 4,
@@ -37,6 +43,8 @@ export const initialNews: ContentItem[] = [
     date: "2024.06.03",
     status: "Нийтлэгдсэн",
     image: "#",
+    alt: "Судалгааны мэдээний зураг",
+    body: "Багш нарын судалгааны амжилтын тойм.",
   },
 ];
 export const initialActivities: ContentItem[] = [
@@ -48,6 +56,8 @@ export const initialActivities: ContentItem[] = [
     status: "Нийтлэгдсэн",
     image: "#",
     location: "МУИС-ийн номын сан",
+    alt: "Карьер өдөрлөгийн зураг",
+    body: "Оюутнуудад зориулсан карьер хөгжлийн өдөрлөг.",
   },
   {
     id: 102,
@@ -57,5 +67,35 @@ export const initialActivities: ContentItem[] = [
     status: "Ноорог",
     image: "#",
     location: "БСОН-ийн 301 тоот",
+    alt: "Семинарын зураг",
+    body: "Дижитал шилжилтийн судалгааны семинар.",
+  },
+];
+export const initialEvents: EventItem[] = [
+  {
+    id: 201,
+    image: "/images/event-forum.png",
+    alt: "Хурлын том танхим цэнхэр суудлуудтай",
+    date: "2026-09-18",
+    time: "14:00 – 17:30",
+    startTime: "14:00",
+    endTime: "17:30",
+    location: "МУИС, 2 дугаар байрны Их танхим",
+    title: "БСОН-ы Бизнесийн жилийн форум",
+    body: "Багш нар, төгсөгчид болон салбарын удирдлагууд Монголын хувийн хэвшлийн ирээдүйн талаар хэлэлцэх хагас өдрийн форум.",
+    status: "Нийтлэгдсэн",
+  },
+  {
+    id: 202,
+    image: "/images/event-data.png",
+    alt: "Оюутнууд дэлгэц дээрх өгөгдлийн график хараад сургалтад суралцаж байгаа нь",
+    date: "2026-09-27",
+    time: "10:00 – 13:00",
+    startTime: "10:00",
+    endTime: "13:00",
+    location: "Бизнесийн сургууль, 402 тоот",
+    title: "Өгөгдөл ба шинжилгээний сургалт",
+    body: "Хүснэгтэн загварчлал, хяналтын самбар боловсруулах болон тоон судалгааны үр дүнг ойлгомжтой танилцуулах практик сургалт.",
+    status: "Ноорог",
   },
 ];

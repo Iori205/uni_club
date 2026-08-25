@@ -1,6 +1,11 @@
 export type Section =
-  "dashboard" | "news" | "activities" | "homepage" | "settings";
-export type ContentType = "Мэдээ" | "Үйл ажиллагаа";
+  | "dashboard"
+  | "news"
+  | "activities"
+  | "events"
+  | "homepage"
+  | "settings";
+export type ContentType = "Мэдээ" | "Үйл ажиллагаа" | "Арга хэмжээ";
 export type Status = "Нийтлэгдсэн" | "Ноорог";
 export type ContentItem = {
   id: number;
@@ -10,5 +15,20 @@ export type ContentItem = {
   status: Status;
   image: string;
   location?: string;
+  alt?: string;
+  body?: string;
+};
+export type EventItem = {
+  id: number;
+  image: string;
+  alt: string;
+  date: string;
+  time: string;
+  startTime: string;
+  endTime: string;
+  location: string;
+  title: string;
+  body: string;
+  status: Status;
 };
 export type NavItem = { id: Section; label: string; icon: React.ElementType };

@@ -1,63 +1,73 @@
 "use client";
 import { useState } from "react";
-import {
-  Bell,
-  FilePenLine,
-  CalendarDays,
-  Home,
-  Settings,
-  LayoutDashboard,
-  Menu,
-  Plus,
-  X,
-} from "lucide-react";
 import type {
   ContentItem,
   ContentType,
+  EventItem,
   Section,
   Status,
 } from "../../lib/admin/types";
-import { initialActivities, initialNews } from "../../lib/admin/mock-data";
+import {
+  initialActivities,
+  initialEvents,
+  initialNews,
+  imagePool,
+} from "../../lib/admin/mock-data";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
 import { NewsView } from "./news/news-view";
 import { ActivityView } from "./activities/activity-view";
+import EventView from "./events/event-view";
+import EventFormModal from "./events/event-modal";
 import HomepageEditor from "./homepage/homepage-editor";
 import { SettingsView } from "./settings/settings-view";
 import { NewsFormModal } from "./news/news-modal";
 import { ActivityFormModal } from "./activities/activity-modal";
-const imagePool = [
-  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=160&q=80",
-  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=160&q=80",
-];
+
 export function AdminShell() {
   const [active, setActive] = useState<Section>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [news, setNews] = useState<ContentItem[]>(initialNews);
   const [activities, setActivities] =
     useState<ContentItem[]>(initialActivities);
+  const [events, setEvents] = useState<EventItem[]>(initialEvents);
   const [modal, setModal] = useState<{
     type: ContentType;
-    item: ContentItem | null;
+    item: ContentItem | EventItem | null;
   } | null>(null);
-  const open = (type: ContentType, item: ContentItem | null = null) =>
-    setModal({ type, item });
+  const open = (
+    type: ContentType,
+    item: ContentItem | EventItem | null = null,
+  ) => setModal({ type, item });
   const save = (data: Partial<ContentItem>) => {
     if (!modal) return;
     const setter = modal.type === "Мэдээ" ? setNews : setActivities;
-    const image = imagePool[Date.now() % imagePool.length] ?? imagePool[0]!;
     setter((items) =>
       modal.item
-        ? items.map((i) => (i.id === modal.item?.id ? { ...i, ...data } : i))
+        ? items.map((i) =>
+            i.id === modal.item?.id
+              ? {
+                  ...i,
+                  ...data,
+                  image: data.image ?? i.image,
+                  title: data.title ?? i.title,
+                  category: data.category ?? i.category,
+                  date: data.date ?? i.date,
+                  status: data.status ?? i.status,
+                }
+              : i,
+          )
         : [
             {
               id: Date.now(),
               title: data.title ?? "",
               category: data.category ?? "Мэдээ",
-              date: "2024.06.20",
+              date: data.date ?? "2024.06.20",
               status: (data.status ?? "Ноорог") as Status,
-              image,
+              image: data.image ?? imagePool[0] ?? "",
+              alt: data.alt,
+              body: data.body,
               location:
                 modal.type === "Үйл ажиллагаа" ? "МУИС, төв байр" : undefined,
             },
@@ -66,14 +76,27 @@ export function AdminShell() {
     );
     setModal(null);
   };
+  const saveEvent = (data: Omit<EventItem, "id">) => {
+    setEvents((items) =>
+      modal?.item
+        ? items.map((i) => (i.id === modal.item?.id ? { ...i, ...data } : i))
+        : [{ id: Date.now(), ...data }, ...items],
+    );
+    setModal(null);
+  };
   const remove = (type: ContentType, id: number) => {
-    const setter = type === "Мэдээ" ? setNews : setActivities;
-    setter((items) => items.filter((i) => i.id !== id));
+    if (type === "Арга хэмжээ")
+      setEvents((items) => items.filter((i) => i.id !== id));
+    else
+      (type === "Мэдээ" ? setNews : setActivities)((items) =>
+        items.filter((i) => i.id !== id),
+      );
   };
   const labels: Record<Section, string> = {
     dashboard: "Хянах самбар",
     news: "Мэдээ",
     activities: "Үйл ажиллагаа",
+    events: "Арга хэмжээ",
     homepage: "Нүүр хуудас",
     settings: "Тохиргоо",
   };
@@ -114,24 +137,39 @@ export function AdminShell() {
               onDelete={(id) => remove("Үйл ажиллагаа", id)}
             />
           )}{" "}
+          {active === "events" && (
+            <EventView
+              items={events}
+              onCreate={() => open("Арга хэмжээ")}
+              onEdit={(i) => open("Арга хэмжээ", i)}
+              onDelete={(id) => remove("Арга хэмжээ", id)}
+            />
+          )}{" "}
           {active === "homepage" && <HomepageEditor />}{" "}
           {active === "settings" && <SettingsView />}
         </main>
       </div>
-      {modal &&
-        (modal.type === "Мэдээ" ? (
-          <NewsFormModal
-            item={modal.item}
-            onClose={() => setModal(null)}
-            onSave={save}
-          />
-        ) : (
-          <ActivityFormModal
-            item={modal.item}
-            onClose={() => setModal(null)}
-            onSave={save}
-          />
-        ))}
+      {modal?.type === "Мэдээ" && (
+        <NewsFormModal
+          item={modal.item as ContentItem | null}
+          onClose={() => setModal(null)}
+          onSave={save}
+        />
+      )}{" "}
+      {modal?.type === "Үйл ажиллагаа" && (
+        <ActivityFormModal
+          item={modal.item as ContentItem | null}
+          onClose={() => setModal(null)}
+          onSave={save}
+        />
+      )}{" "}
+      {modal?.type === "Арга хэмжээ" && (
+        <EventFormModal
+          item={modal.item as EventItem | null}
+          onClose={() => setModal(null)}
+          onSave={saveEvent}
+        />
+      )}
     </div>
   );
 }
