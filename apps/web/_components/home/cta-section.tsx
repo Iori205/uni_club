@@ -1,4 +1,4 @@
-import { Button } from "../ui/button";
+import { LinkButton } from "../ui/button";
 
 export function CtaSection() {
   return (
@@ -13,18 +13,20 @@ export function CtaSection() {
             Намрын улирлын хүсэлтийг тухай бүр хүлээн авч хянана.
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button
+            <LinkButton
+              href="/join"
               variant="secondary"
               className="rounded-full bg-card px-8 py-5 text-base font-semibold text-primary hover:bg-card/90"
             >
               Гишүүнээр элсэх
-            </Button>
-            <Button
+            </LinkButton>
+            <LinkButton
+              href="#contact"
               variant="outline"
               className="rounded-full border-primary-foreground/40 bg-transparent px-8 py-5 text-base font-semibold text-primary-foreground hover:bg-primary-foreground/10"
             >
               Холбоо барих
-            </Button>
+            </LinkButton>
           </div>
         </div>
       </div>

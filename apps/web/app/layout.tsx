@@ -1,6 +1,8 @@
 import { Analytics } from "@vercel/analytics/next";
 import type { Metadata, Viewport } from "next";
 import { Inter, PT_Serif } from "next/font/google";
+import { SiteHeader } from "../_components/home/navbar";
+import { SiteFooter } from "../_components/home/footer";
 import "./globals.css";
 
 const inter = Inter({
@@ -39,7 +41,11 @@ export default function RootLayout({
   return (
     <html lang="mn" className={`light ${inter.variable} ${ptSerif.variable}`}>
       <body className="bg-background font-sans antialiased">
-        {children}
+        <div className="min-h-screen bg-background">
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+        </div>
         {process.env.NODE_ENV === "production" && <Analytics />}
       </body>
     </html>

@@ -1,0 +1,114 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { EVENTS, parseMongolianDate } from "../../lib/events-data";
+import { EventCard } from "./event-card";
+import { EmptyState } from "../ui/empty-state";
+import { Pagination } from "../ui/pagination";
+
+const PAGE_SIZE = 6;
+type TimeFilter = "Бүгд" | "Ирээдүйн" | "Өнгөрсөн";
+
+export function EventsListView() {
+  const [query, setQuery] = useState("");
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("Бүгд");
+  const [page, setPage] = useState(1);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const now = new Date();
+    return EVENTS.filter((item) => {
+      const matchesQuery =
+        q === "" ||
+        item.title.toLowerCase().includes(q) ||
+        item.location.toLowerCase().includes(q);
+
+      if (!matchesQuery) return false;
+      if (timeFilter === "Бүгд") return true;
+
+      const eventDate = parseMongolianDate(item.date);
+      if (!eventDate) return true; // огноог задлан унших боломжгүй бол шүүлтээс хассангүй
+      return timeFilter === "Ирээдүйн" ? eventDate >= now : eventDate < now;
+    });
+  }, [query, timeFilter]);
+
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  return (
+    <>
+      <section className="border-b border-border bg-background">
+        <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-16">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
+            Арга хэмжээ
+          </p>
+          <h1 className="mt-3 font-serif text-3xl font-normal tracking-tight text-foreground lg:text-4xl">
+            Бүх арга хэмжээ
+          </h1>
+          <p className="mt-3 max-w-xl text-pretty text-muted-foreground">
+            Кампус дээр удахгүй болон өмнө болсон арга хэмжээнүүд.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-background">
+        <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setPage(1);
+              }}
+              placeholder="Мэдээ хайх..."
+              aria-label="Мэдээ хайх"
+              className="h-11 w-full rounded-full border border-border bg-card px-5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none sm:w-[420px] lg:w-[480px]"
+            />
+            <div className="relative shrink-0">
+              <select
+                value={timeFilter}
+                onChange={(event) => {
+                  setTimeFilter(event.target.value as TimeFilter);
+                  setPage(1);
+                }}
+                aria-label="Хугацаагаар шүүх"
+                className="h-11 appearance-none rounded-full border border-border bg-card py-2 pl-5 pr-10 text-sm text-foreground focus:border-primary focus:outline-none"
+              >
+                <option value="Бүгд">Бүгд</option>
+                <option value="Ирээдүйн">Ирээдүйн</option>
+                <option value="Өнгөрсөн">Өнгөрсөн</option>
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
+            <p className="shrink-0 text-sm text-muted-foreground sm:ml-auto">
+              {filtered.length} арга хэмжээ олдлоо
+            </p>
+          </div>
+
+          {visible.length === 0 ? (
+            <div className="mt-8">
+              <EmptyState message="Хайлтад тохирох арга хэмжээ олдсонгүй." />
+            </div>
+          ) : (
+            <div className="mt-8 flex max-w-4xl flex-col gap-5">
+              {visible.map((item) => (
+                <EventCard key={item.id} item={item} />
+              ))}
+            </div>
+          )}
+
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
+        </div>
+      </section>
+    </>
+  );
+}

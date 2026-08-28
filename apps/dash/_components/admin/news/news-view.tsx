@@ -12,7 +12,7 @@ export function NewsView({
   items: ContentItem[];
   onCreate: () => void;
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, label: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<"Бүгд" | Status>("Бүгд");

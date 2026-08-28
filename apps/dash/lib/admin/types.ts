@@ -32,3 +32,4 @@ export type EventItem = {
   status: Status;
 };
 export type NavItem = { id: Section; label: string; icon: React.ElementType };
+export type HomepageContent = { title: string; intro: string };

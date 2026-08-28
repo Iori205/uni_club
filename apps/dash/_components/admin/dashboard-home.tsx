@@ -1,37 +1,50 @@
 "use client";
-import {
-  CalendarDays,
-  FilePenLine,
-  Globe2,
-  Pencil,
-  Plus,
-  type LucideIcon,
-} from "lucide-react";
-import type { ContentItem, Section } from "../../lib/admin/types";
+import { CalendarDays, FilePenLine, Globe2, Pencil } from "lucide-react";
+import type { ContentItem, EventItem, Section } from "../../lib/admin/types";
 
-const stats: { label: string; value: string; icon: LucideIcon }[] = [
-  { label: "Нийт контент", value: "128", icon: Globe2 },
-  { label: "Нийтлэгдсэн", value: "96", icon: FilePenLine },
-  { label: "Ноорог", value: "32", icon: Pencil },
-  { label: "Энэ сарын мэдээ", value: "18", icon: CalendarDays },
-];
+function isThisMonth(dateStr: string): boolean {
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return false;
+  const now = new Date();
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth()
+  );
+}
 
 export function DashboardHome({
   news,
+  activities,
+  events,
   onCreate,
   onNavigate,
 }: {
   news: ContentItem[];
+  activities: ContentItem[];
+  events: EventItem[];
   onCreate: () => void;
   onNavigate: (s: Section) => void;
 }) {
+  const all = [...news, ...activities, ...events];
+  const published = all.filter((i) => i.status === "Нийтлэгдсэн").length;
+  const drafts = all.filter((i) => i.status === "Ноорог").length;
+  const thisMonth = [...news, ...activities].filter((i) =>
+    isThisMonth(i.date),
+  ).length;
+
+  const stats = [
+    { label: "Нийт контент", value: String(all.length), icon: Globe2 },
+    { label: "Нийтлэгдсэн", value: String(published), icon: FilePenLine },
+    { label: "Ноорог", value: String(drafts), icon: Pencil },
+    { label: "Энэ сарын мэдээ", value: String(thisMonth), icon: CalendarDays },
+  ];
+
   return (
     <section>
       <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
         <div>
-          <p className="text-sm font-medium text-primary">2024 оны 6-р сар</p>
-          <h1 className="mt-2 font-serif text-3xl font-bold tracking-tight md:text-4xl">
-            Сайн байна уу, Бат-Эрдэнэ
+          <h1 className="font-serif text-3xl font-bold tracking-tight md:text-4xl">
+            Хянах самбар
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             БСОН-ийн цахим орчныг эндээс хялбар удирдана.
@@ -41,7 +54,7 @@ export function DashboardHome({
           onClick={onCreate}
           className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
         >
-          <Plus size={18} />
+          <FilePenLine size={18} />
           Шинэ контент үүсгэх
         </button>
       </div>

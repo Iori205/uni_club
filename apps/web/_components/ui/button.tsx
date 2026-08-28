@@ -1,4 +1,6 @@
 import type { ButtonHTMLAttributes } from "react";
+import Link from "next/link";
+import type { ComponentProps } from "react";
 
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 
@@ -16,6 +18,23 @@ const variants: Record<ButtonVariant, string> = {
   ghost: "bg-transparent text-[#68758a] hover:text-[#20579d]",
 };
 
+const baseClasses = [
+  "inline-flex",
+  "h-10",
+  "items-center",
+  "justify-center",
+  "rounded-full",
+  "px-7",
+  "text-sm",
+  "font-semibold",
+  "tracking-[-0.01em]",
+  "transition-colors",
+  "duration-200",
+  "focus-visible:outline-2",
+  "focus-visible:outline-offset-2",
+  "focus-visible:outline-[#20579d]",
+].join(" ");
+
 export function Button({
   className = "",
   variant = "primary",
@@ -25,25 +44,25 @@ export function Button({
   return (
     <button
       type={type}
-      className={`
-        inline-flex
-        h-10
-        items-center
-        justify-center
-        rounded-full
-        px-7
-        text-sm
-        font-semibold
-        tracking-[-0.01em]
-        transition-colors
-        duration-200
-        focus-visible:outline-2
-        focus-visible:outline-offset-2
-        focus-visible:outline-[#20579d]
+      className={`${baseClasses} ${variants[variant]} ${className}`}
+      {...props}
+    />
+  );
+}
 
-        ${variants[variant]}
-        ${className}
-      `}
+type LinkButtonProps = ComponentProps<typeof Link> & {
+  variant?: ButtonVariant;
+};
+
+/** Same visual variants as `Button`, rendered as a navigable `next/link` for CTAs that go to a real route. */
+export function LinkButton({
+  className = "",
+  variant = "primary",
+  ...props
+}: LinkButtonProps) {
+  return (
+    <Link
+      className={`${baseClasses} ${variants[variant]} ${className}`}
       {...props}
     />
   );

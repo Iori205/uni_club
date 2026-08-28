@@ -120,9 +120,9 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
             Огноо
             <input
               required
+              type="date"
               value={form.date}
               onChange={(e) => update("date", e.target.value)}
-              placeholder="2026 оны 8 дугаар сарын 4"
               className="h-11 rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
             />
           </label>

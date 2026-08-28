@@ -20,7 +20,7 @@ export function EventView({
   items: EventItem[];
   onCreate: () => void;
   onEdit: (item: EventItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, label: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"Бүгд" | Status>("Бүгд");
@@ -133,7 +133,7 @@ export function EventView({
                         <Pencil size={16} />
                       </button>
                       <button
-                        onClick={() => onDelete(item.id)}
+                        onClick={() => onDelete(item.id, item.title)}
                         aria-label={`${item.title} устгах`}
                         className="rounded-md p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                       >
@@ -176,7 +176,7 @@ export function EventView({
                     <Pencil size={15} />
                   </button>
                   <button
-                    onClick={() => onDelete(item.id)}
+                    onClick={() => onDelete(item.id, item.title)}
                     className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
                     aria-label="Устгах"
                   >

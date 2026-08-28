@@ -17,13 +17,17 @@ import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
 import { NewsView } from "./news/news-view";
-import { ActivityView } from "./activities/activity-view";
 import EventView from "./events/event-view";
 import EventFormModal from "./events/event-modal";
-import HomepageEditor from "./homepage/homepage-editor";
 import { SettingsView } from "./settings/settings-view";
 import { NewsFormModal } from "./news/news-modal";
-import { ActivityFormModal } from "./activities/activity-modal";
+import { ConfirmDialog } from "./shared/confirm-dialog";
+
+const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+  Мэдээ: "мэдээг",
+  "Үйл ажиллагаа": "үйл ажиллагааг",
+  "Арга хэмжээ": "арга хэмжээг",
+};
 
 export function AdminShell() {
   const [active, setActive] = useState<Section>("dashboard");
@@ -36,10 +40,17 @@ export function AdminShell() {
     type: ContentType;
     item: ContentItem | EventItem | null;
   } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<{
+    type: ContentType;
+    id: number;
+    label: string;
+  } | null>(null);
+
   const open = (
     type: ContentType,
     item: ContentItem | EventItem | null = null,
   ) => setModal({ type, item });
+
   const save = (data: Partial<ContentItem>) => {
     if (!modal) return;
     const setter = modal.type === "Мэдээ" ? setNews : setActivities;
@@ -63,7 +74,7 @@ export function AdminShell() {
               id: Date.now(),
               title: data.title ?? "",
               category: data.category ?? "Мэдээ",
-              date: data.date ?? "2024.06.20",
+              date: data.date ?? "2024-06-20",
               status: (data.status ?? "Ноорог") as Status,
               image: data.image ?? imagePool[0] ?? "",
               alt: data.alt,
@@ -84,14 +95,25 @@ export function AdminShell() {
     );
     setModal(null);
   };
-  const remove = (type: ContentType, id: number) => {
+
+  const requestDelete = (
+    type: ContentType,
+    id: number,
+    label: string,
+  ) => setPendingDelete({ type, id, label });
+
+  const confirmDelete = () => {
+    if (!pendingDelete) return;
+    const { type, id } = pendingDelete;
     if (type === "Арга хэмжээ")
       setEvents((items) => items.filter((i) => i.id !== id));
     else
       (type === "Мэдээ" ? setNews : setActivities)((items) =>
         items.filter((i) => i.id !== id),
       );
+    setPendingDelete(null);
   };
+
   const labels: Record<Section, string> = {
     dashboard: "Хянах самбар",
     news: "Мэдээ",
@@ -117,6 +139,8 @@ export function AdminShell() {
           {active === "dashboard" && (
             <DashboardHome
               news={news}
+              activities={activities}
+              events={events}
               onCreate={() => open("Мэдээ")}
               onNavigate={setActive}
             />
@@ -126,15 +150,7 @@ export function AdminShell() {
               items={news}
               onCreate={() => open("Мэдээ")}
               onEdit={(i) => open("Мэдээ", i)}
-              onDelete={(id) => remove("Мэдээ", id)}
-            />
-          )}{" "}
-          {active === "activities" && (
-            <ActivityView
-              items={activities}
-              onCreate={() => open("Үйл ажиллагаа")}
-              onEdit={(i) => open("Үйл ажиллагаа", i)}
-              onDelete={(id) => remove("Үйл ажиллагаа", id)}
+              onDelete={(id, label) => requestDelete("Мэдээ", id, label)}
             />
           )}{" "}
           {active === "events" && (
@@ -142,10 +158,11 @@ export function AdminShell() {
               items={events}
               onCreate={() => open("Арга хэмжээ")}
               onEdit={(i) => open("Арга хэмжээ", i)}
-              onDelete={(id) => remove("Арга хэмжээ", id)}
+              onDelete={(id, label) =>
+                requestDelete("Арга хэмжээ", id, label)
+              }
             />
           )}{" "}
-          {active === "homepage" && <HomepageEditor />}{" "}
           {active === "settings" && <SettingsView />}
         </main>
       </div>
@@ -156,18 +173,19 @@ export function AdminShell() {
           onSave={save}
         />
       )}{" "}
-      {modal?.type === "Үйл ажиллагаа" && (
-        <ActivityFormModal
-          item={modal.item as ContentItem | null}
-          onClose={() => setModal(null)}
-          onSave={save}
-        />
-      )}{" "}
       {modal?.type === "Арга хэмжээ" && (
         <EventFormModal
           item={modal.item as EventItem | null}
           onClose={() => setModal(null)}
           onSave={saveEvent}
+        />
+      )}
+      {pendingDelete && (
+        <ConfirmDialog
+          title="Устгах уу?"
+          message={`Та "${pendingDelete.label}" ${CONTENT_TYPE_LABELS[pendingDelete.type]} устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүй.`}
+          onCancel={() => setPendingDelete(null)}
+          onConfirm={confirmDelete}
         />
       )}
     </div>

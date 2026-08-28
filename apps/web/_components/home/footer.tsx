@@ -1,4 +1,8 @@
+"use client";
+
 import { MapPin, Mail, Phone } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BsonLogo } from "./brand-mark";
 
 function FacebookIcon({ className }: { className?: string }) {
@@ -45,14 +49,22 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 const MENU = [
-  { label: "Нүүр", href: "#" },
-  { label: "Бидний тухай", href: "#about" },
-  { label: "Мэдээ", href: "#news" },
-  { label: "Үйл ажиллагаа", href: "#events" },
-  { label: "Холбоо барих", href: "#contact" },
-];
+  { label: "Нүүр", hash: null },
+  { label: "Бидний тухай", hash: "about" },
+  { label: "Мэдээ", hash: "news" },
+  { label: "Үйл ажиллагаа", hash: "events" },
+  { label: "Холбоо барих", hash: "contact" },
+] as const;
+
+function navHref(hash: string | null, isHome: boolean): string {
+  if (isHome) return hash ? `#${hash}` : "#";
+  return hash ? `/#${hash}` : "/";
+}
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   return (
     <footer id="contact" className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-14">
@@ -73,12 +85,12 @@ export function SiteFooter() {
             <ul className="mt-5 space-y-3">
               {MENU.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
+                  <Link
+                    href={navHref(item.hash, isHome)}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -121,14 +133,14 @@ export function SiteFooter() {
                 { icon: InstagramIcon, label: "Instagram" },
                 { icon: LinkedinIcon, label: "LinkedIn" },
               ].map((social) => (
-                <a
+                <span
                   key={social.label}
-                  href="#contact"
-                  aria-label={social.label}
-                  className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  aria-label={`${social.label} (удахгүй нэмэгдэнэ)`}
+                  title={`${social.label} — удахгүй нэмэгдэнэ`}
+                  className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground/50"
                 >
                   <social.icon className="size-5" />
-                </a>
+                </span>
               ))}
             </div>
           </div>

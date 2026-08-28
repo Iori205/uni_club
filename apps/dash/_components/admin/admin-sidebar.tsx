@@ -1,10 +1,10 @@
 "use client";
+import Image from "next/image";
 import {
   BookOpen,
   CalendarDays,
   ChevronRight,
   FilePenLine,
-  Home,
   LayoutDashboard,
   Settings,
   X,
@@ -13,9 +13,7 @@ import type { Section } from "../../lib/admin/types";
 const nav = [
   { id: "dashboard", label: "Хянах самбар", icon: LayoutDashboard },
   { id: "news", label: "Мэдээ", icon: FilePenLine },
-  { id: "activities", label: "Үйл ажиллагаа", icon: CalendarDays },
   { id: "events", label: "Арга хэмжээ", icon: CalendarDays },
-  { id: "homepage", label: "Нүүр хуудас", icon: Home },
   { id: "settings", label: "Тохиргоо", icon: Settings },
 ] as const;
 export function AdminSidebar({
@@ -40,12 +38,24 @@ export function AdminSidebar({
         className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border bg-card px-5 py-6 transition-transform lg:translate-x-0 ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         <div className="flex items-start justify-between px-2">
-          <button className="text-left" onClick={() => onNavigate("dashboard")}>
-            <div className="font-serif text-2xl font-bold tracking-tight text-primary">
-              БСОН
-            </div>
-            <div className="mt-1 text-[11px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
-              Админ удирдлага
+          <button
+            className="flex items-center gap-3 text-left"
+            onClick={() => onNavigate("dashboard")}
+          >
+            <Image
+              src="/images/logo.png"
+              alt="БСОН лого"
+              width={32}
+              height={32}
+              className="h-9 w-8 rounded-sm"
+            />
+            <div className="flex flex-col leading-none">
+              <span className="font-serif text-lg font-bold tracking-tight text-primary">
+                БСОН
+              </span>
+              <span className=" text-[11px] font-medium tracking-[0.16em] text-muted-foreground">
+                Админ удирдлага
+              </span>
             </div>
           </button>
           <button
@@ -56,7 +66,7 @@ export function AdminSidebar({
             <X size={18} />
           </button>
         </div>
-        <div className="my-8 h-px bg-border" />
+        <div className="my-6 bg-border" />
         <nav className="flex flex-1 flex-col gap-1" aria-label="Үндсэн цэс">
           {nav.map(({ id, label, icon: Icon }) => (
             <button

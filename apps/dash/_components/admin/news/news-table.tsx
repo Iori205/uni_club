@@ -8,7 +8,7 @@ export function NewsTable({
 }: {
   items: ContentItem[];
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, label: string) => void;
 }) {
   if (!items.length)
     return (
@@ -68,7 +68,7 @@ export function NewsTable({
                     </button>
                     <button
                       aria-label={`${i.title} устгах`}
-                      onClick={() => onDelete(i.id)}
+                      onClick={() => onDelete(i.id, i.title)}
                       className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-destructive"
                     >
                       <Trash2 size={16} />

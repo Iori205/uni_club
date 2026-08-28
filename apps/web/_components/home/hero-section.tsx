@@ -1,4 +1,5 @@
-import { Button } from "../ui/button";
+import { LinkButton } from "../ui/button";
+import { SafeImage } from "../ui/safe-image";
 
 export function HeroSection() {
   return (
@@ -17,20 +18,24 @@ export function HeroSection() {
             үргэлжлэх хамт олон дундаа.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-            <Button className="h-10 rounded-full bg-primary px-8 text-base font-medium text-primary-foreground hover:bg-primary/90">
+            <LinkButton
+              href="/join"
+              className="h-10 rounded-full bg-primary px-8 text-base font-medium text-primary-foreground hover:bg-primary/90"
+            >
               БСОН-д нэгдэх
-            </Button>
-            <Button
+            </LinkButton>
+            <LinkButton
+              href="/news"
               variant="secondary"
               className="h-10 rounded-full border-border bg-card px-8 text-base font-medium text-foreground hover:bg-secondary"
             >
               Сүүлийн үеийн мэдээ
-            </Button>
+            </LinkButton>
           </div>
         </div>
 
         <div className="relative">
-          <img
+          <SafeImage
             src="/images/hero.jpg"
             alt="Бизнесийн сургуулийн оюутнууд лекцийн танхимд хамтран суралцаж байгаа нь"
             className="aspect-4/3 w-full rounded-3xl object-cover shadow-xl shadow-primary/10"

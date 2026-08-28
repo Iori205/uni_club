@@ -112,6 +112,9 @@ export function EventFormModal({
                 src={form.image}
                 alt={form.alt || "Арга хэмжээний зураг"}
                 className="h-32 w-full rounded-lg object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             ) : (
               <span className="flex h-20 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground">

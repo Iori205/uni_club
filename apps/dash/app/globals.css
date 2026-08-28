@@ -28,6 +28,9 @@
   --input: #dfe4eb;
   --ring: #20579d;
 
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
   --radius: 0.75rem;
 }
 
@@ -56,6 +59,9 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --font-sans: var(--font-inter);
   --font-serif: var(--font-pt-serif);

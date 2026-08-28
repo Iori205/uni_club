@@ -1,5 +1,5 @@
 "use client";
-import { CalendarDays, Plus, Search } from "lucide-react";
+import { CalendarDays, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
 import type { ContentItem, Status } from "../../../lib/admin/types";
 import { StatusBadge } from "../shared/shared-badge";
@@ -12,7 +12,7 @@ export function ActivityView({
   items: ContentItem[];
   onCreate: () => void;
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number) => void;
+  onDelete: (id: number, label: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("Бүгд");
@@ -120,19 +120,23 @@ export function ActivityView({
                     <td className="px-5 py-4">
                       <StatusBadge status={i.status} />
                     </td>
-                    <td className="px-5 py-4 text-right">
-                      <button
-                        onClick={() => onEdit(i)}
-                        className="px-2 text-sm font-medium text-primary"
-                      >
-                        Засах
-                      </button>
-                      <button
-                        onClick={() => onDelete(i.id)}
-                        className="px-2 text-sm font-medium text-destructive"
-                      >
-                        Устгах
-                      </button>
+                    <td className="px-5 py-4">
+                      <div className="flex justify-end gap-1">
+                        <button
+                          aria-label={`${i.title} засах`}
+                          onClick={() => onEdit(i)}
+                          className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          aria-label={`${i.title} устгах`}
+                          onClick={() => onDelete(i.id, i.title)}
+                          className="rounded-md p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -2,46 +2,59 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Button } from "../ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { LinkButton } from "../ui/button";
 import { BsonLogo } from "./brand-mark";
 
 const NAV_ITEMS = [
-  { label: "Нүүр", href: "#" },
-  { label: "Бидний тухай", href: "#about" },
-  { label: "Мэдээ", href: "#news" },
-  { label: "Үйл ажиллагаа", href: "#events" },
-  { label: "Холбоо барих", href: "#contact" },
-];
+  { label: "Нүүр", hash: null },
+  { label: "Бидний тухай", hash: "about" },
+  { label: "Мэдээ", hash: "news" },
+  { label: "Үйл ажиллагаа", hash: "events" },
+  { label: "Холбоо барих", hash: "contact" },
+] as const;
+
+/** Homepage-ийн section рүү (тэр хуудсан дээр байхад) шууд anchor, өөр route-оос бол /-рүү нэвтэрч anchor руу үсэрнэ. */
+function navHref(hash: string | null, isHome: boolean): string {
+  if (isHome) return hash ? `#${hash}` : "#";
+  return hash ? `/#${hash}` : "/";
+}
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isHome = pathname === "/";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 lg:px-6 py-4">
-        <a href="#" aria-label="БСОН нүүр хуудас">
+        <Link href="/" aria-label="БСОН нүүр хуудас">
           <BsonLogo />
-        </a>
+        </Link>
 
         <nav
           className="hidden items-center gap-8 lg:flex"
           aria-label="Үндсэн цэс"
         >
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.label}
-              href={item.href}
+              href={navHref(item.hash, isHome)}
               className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
         </nav>
 
         <div className="hidden lg:block">
-          <Button className="rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90">
+          <LinkButton
+            href="/join"
+            className="rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+          >
             БСОН-д нэгдэх
-          </Button>
+          </LinkButton>
         </div>
 
         <button
@@ -62,18 +75,22 @@ export function SiteHeader() {
             aria-label="Гар утасны цэс"
           >
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                href={navHref(item.hash, isHome)}
                 onClick={() => setOpen(false)}
                 className="rounded-md px-2 py-2.5 text-[15px] font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-primary"
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
-            <Button className="mt-2 w-full rounded-full bg-primary py-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90">
+            <LinkButton
+              href="/join"
+              onClick={() => setOpen(false)}
+              className="mt-2 w-full rounded-full bg-primary py-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            >
               БСОН-д нэгдэх
-            </Button>
+            </LinkButton>
           </nav>
         </div>
       )}
