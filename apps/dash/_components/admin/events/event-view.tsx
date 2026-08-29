@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import {
   CalendarDays,
+  ChevronDown,
   MapPin,
   Pencil,
   Plus,
@@ -20,7 +21,7 @@ export function EventView({
   items: EventItem[];
   onCreate: () => void;
   onEdit: (item: EventItem) => void;
-  onDelete: (id: number, label: string) => void;
+  onDelete: (id: string, label: string) => void;
 }) {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<"Бүгд" | Status>("Бүгд");
@@ -71,18 +72,24 @@ export function EventView({
             aria-label="Арга хэмжээ хайх"
           />
         </label>
-        <select
-          value={status}
-          onChange={(e) => {
-            setStatus(e.target.value as "Бүгд" | Status);
-            setPage(1);
-          }}
-          className="h-10 rounded-lg border border-input bg-background px-3 text-sm"
-        >
-          <option>Бүгд</option>
-          <option>Нийтлэгдсэн</option>
-          <option>Ноорог</option>
-        </select>
+        <div className="relative">
+          <select
+            value={status}
+            onChange={(e) => {
+              setStatus(e.target.value as "Бүгд" | Status);
+              setPage(1);
+            }}
+            className="h-10 appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm"
+          >
+            <option>Бүгд</option>
+            <option>Нийтлэгдсэн</option>
+            <option>Ноорог</option>
+          </select>
+          <ChevronDown
+            className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+        </div>
       </div>
       <div className="mt-5 overflow-hidden rounded-xl border border-border bg-card">
         <div className="hidden overflow-x-auto md:block">

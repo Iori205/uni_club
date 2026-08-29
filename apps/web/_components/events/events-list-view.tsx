@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { EVENTS, parseMongolianDate } from "../../lib/events-data";
+import { getAllEvents, parseMongolianDate, type EventItem } from "../../lib/events-data";
 import { EventCard } from "./event-card";
 import { EmptyState } from "../ui/empty-state";
 import { Pagination } from "../ui/pagination";
@@ -11,14 +11,36 @@ const PAGE_SIZE = 6;
 type TimeFilter = "Бүгд" | "Ирээдүйн" | "Өнгөрсөн";
 
 export function EventsListView() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("Бүгд");
   const [page, setPage] = useState(1);
 
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(false);
+    getAllEvents()
+      .then((items) => {
+        if (!cancelled) setEvents(items);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const now = new Date();
-    return EVENTS.filter((item) => {
+    return events.filter((item) => {
       const matchesQuery =
         q === "" ||
         item.title.toLowerCase().includes(q) ||
@@ -31,7 +53,7 @@ export function EventsListView() {
       if (!eventDate) return true; // огноог задлан унших боломжгүй бол шүүлтээс хассангүй
       return timeFilter === "Ирээдүйн" ? eventDate >= now : eventDate < now;
     });
-  }, [query, timeFilter]);
+  }, [events, query, timeFilter]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -62,8 +84,8 @@ export function EventsListView() {
                 setQuery(event.target.value);
                 setPage(1);
               }}
-              placeholder="Мэдээ хайх..."
-              aria-label="Мэдээ хайх"
+              placeholder="Гарчиг эсвэл байршлаар хайх..."
+              aria-label="Арга хэмжээ хайх"
               className="h-11 w-full rounded-full border border-border bg-card px-5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none sm:w-[420px] lg:w-[480px]"
             />
             <div className="relative shrink-0">
@@ -86,11 +108,19 @@ export function EventsListView() {
               />
             </div>
             <p className="shrink-0 text-sm text-muted-foreground sm:ml-auto">
-              {filtered.length} арга хэмжээ олдлоо
+              {loading ? "Уншиж байна..." : `${filtered.length} арга хэмжээ олдлоо`}
             </p>
           </div>
 
-          {visible.length === 0 ? (
+          {loading ? (
+            <div className="mt-8">
+              <EmptyState message="Арга хэмжээ ачаалж байна..." />
+            </div>
+          ) : error ? (
+            <div className="mt-8">
+              <EmptyState message="Арга хэмжээ ачаалж чадсангүй. Дараа дахин оролдоно уу." />
+            </div>
+          ) : visible.length === 0 ? (
             <div className="mt-8">
               <EmptyState message="Хайлтад тохирох арга хэмжээ олдсонгүй." />
             </div>
@@ -102,11 +132,7 @@ export function EventsListView() {
             </div>
           )}
 
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-            onPageChange={setPage}
-          />
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </div>
       </section>
     </>

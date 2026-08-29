@@ -6,6 +6,8 @@ import { DepartmentsSection } from "../_components/home/departments-section";
 import { StatsSection } from "../_components/home/statistics-section";
 import { CtaSection } from "../_components/home/cta-section";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   return (
     <>

@@ -2,29 +2,28 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { NEWS, getNewsById } from "../../../lib/news-data";
+import { getAllNews, getNewsById } from "../../../lib/news-data";
 import { NewsCardCompact } from "../../../_components/news/news-card";
 import { SafeImage } from "../../../_components/ui/safe-image";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return NEWS.map((item) => ({ slug: item.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = getNewsById(slug);
+  const item = await getNewsById(slug);
   if (!item) return { title: "Мэдээ олдсонгүй | БСОН" };
   return { title: `${item.title} | БСОН`, description: item.excerpt };
 }
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getNewsById(slug);
+  const item = await getNewsById(slug);
   if (!item) notFound();
 
-  const related = NEWS.filter((n) => n.id !== item.id).slice(0, 3);
+  const allNews = await getAllNews().catch(() => []);
+  const related = allNews.filter((n) => n.id !== item.id).slice(0, 3);
 
   return (
     <>

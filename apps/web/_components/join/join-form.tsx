@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { apiFetch } from "../../lib/api-client";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -22,6 +23,7 @@ export function JoinForm() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   function validate(values: FormState): FormErrors {
     const next: FormErrors = {};
@@ -32,18 +34,25 @@ export function JoinForm() {
     return next;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextErrors = validate(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
     setSubmitting(true);
-    // Backend/API энэ шатанд байхгүй тул хүсэлтийг зөвхөн UI дээр симуляц хийж байна.
-    setTimeout(() => {
-      setSubmitting(false);
+    setSubmitError(false);
+    try {
+      await apiFetch("/contact", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
       setSubmitted(true);
-    }, 350);
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (submitted) {
@@ -132,6 +141,12 @@ export function JoinForm() {
           placeholder="Яагаад БСОН-д нэгдэхийг хүсч байгаагаа бичнэ үү (сонголтоор)"
         />
       </div>
+
+      {submitError && (
+        <p role="alert" className="text-sm text-red-600">
+          Илгээхэд алдаа гарлаа. Дараа дахин оролдоно уу.
+        </p>
+      )}
 
       <Button type="submit" disabled={submitting} className="w-full">
         {submitting ? "Илгээж байна..." : "Илгээх"}

@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { NEWS, getNewsTags } from "../../lib/news-data";
+import { getAllNews, type NewsItem } from "../../lib/news-data";
 import { NewsCard } from "./news-card";
 import { EmptyState } from "../ui/empty-state";
 import { Pagination } from "../ui/pagination";
@@ -10,19 +10,45 @@ import { Pagination } from "../ui/pagination";
 const PAGE_SIZE = 9;
 
 export function NewsListView() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [tag, setTag] = useState("Бүгд");
   const [page, setPage] = useState(1);
-  const tags = useMemo(() => ["Бүгд", ...getNewsTags()], []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(false);
+    getAllNews()
+      .then((items) => {
+        if (!cancelled) setNews(items);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const tags = useMemo(
+    () => ["Бүгд", ...Array.from(new Set(news.map((item) => item.tag)))],
+    [news],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return NEWS.filter((item) => {
+    return news.filter((item) => {
       const matchesQuery = q === "" || item.title.toLowerCase().includes(q);
       const matchesTag = tag === "Бүгд" || item.tag === tag;
       return matchesQuery && matchesTag;
     });
-  }, [query, tag]);
+  }, [news, query, tag]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -79,11 +105,19 @@ export function NewsListView() {
               />
             </div>
             <p className="shrink-0 text-sm text-muted-foreground sm:ml-auto">
-              {filtered.length} мэдээ олдлоо
+              {loading ? "Уншиж байна..." : `${filtered.length} мэдээ олдлоо`}
             </p>
           </div>
 
-          {visible.length === 0 ? (
+          {loading ? (
+            <div className="mt-8">
+              <EmptyState message="Мэдээ ачаалж байна..." />
+            </div>
+          ) : error ? (
+            <div className="mt-8">
+              <EmptyState message="Мэдээ ачаалж чадсангүй. Дараа дахин оролдоно уу." />
+            </div>
+          ) : visible.length === 0 ? (
             <div className="mt-8">
               <EmptyState message="Хайлтад тохирох мэдээ олдсонгүй." />
             </div>
@@ -95,11 +129,7 @@ export function NewsListView() {
             </div>
           )}
 
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-            onPageChange={setPage}
-          />
+          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </div>
       </section>
     </>

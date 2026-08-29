@@ -8,7 +8,7 @@ export type Section =
 export type ContentType = "Мэдээ" | "Үйл ажиллагаа" | "Арга хэмжээ";
 export type Status = "Нийтлэгдсэн" | "Ноорог";
 export type ContentItem = {
-  id: number;
+  id: string;
   title: string;
   category: string;
   date: string;
@@ -19,7 +19,7 @@ export type ContentItem = {
   body?: string;
 };
 export type EventItem = {
-  id: number;
+  id: string;
   image: string;
   alt: string;
   date: string;

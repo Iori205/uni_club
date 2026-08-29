@@ -1,3 +1,5 @@
+import { apiFetch, ApiError } from "./api-client";
+
 export type NewsItem = {
   id: string;
   image: string;
@@ -9,46 +11,24 @@ export type NewsItem = {
   body: string;
 };
 
-export const NEWS: NewsItem[] = [
-  {
-    id: "kejs-temtseenii-burtgel",
-    image: "/images/hero-students.png",
-    alt: "Оюутнууд лекцийн танхимд илтгэл сонсож байгаа нь",
-    tag: "Зарлал",
-    date: "2026 оны 8 дугаар сарын 4",
-    title: "Үндэсний хэмжээний кейс шийдвэрлэх тэмцээний бүртгэл нээлттэй",
-    excerpt:
-      "Гурав-дөрвөн оюутны бүрэлдэхүүнтэй баг 8 дугаар сарын 20-ныг хүртэл бүртгүүлэх боломжтой.",
-    body: "Гурав-дөрвөн оюутны бүрэлдэхүүнтэй баг 8 дугаар сарын 20-ныг хүртэл бүртгүүлэх боломжтой. Шалгарсан багууд багш нар болон салбарын мэргэжилтнүүдээс бүрдсэн шүүгчдийн өмнө илтгэл тавина.",
-  },
-  {
-    id: "mentorship-hutulbur",
-    image: "/images/news-workshop.png",
-    alt: "Оюутнууд болон төгсөгчид сүлжээ үүсгэн ярилцаж байгаа нь",
-    tag: "Хөтөлбөр",
-    date: "2026 оны 7 дугаар сарын 22",
-    title: "Төгсөгчдийн менторшип хөтөлбөрт 60 оюутан хамрагдлаа",
-    excerpt:
-      "Хөтөлбөрийн гурав дахь ээлжид банк санхүү, зөвлөх үйлчилгээ, төрийн бодлогын салбарын төгсөгчид оролцлоо.",
-    body: "Хөтөлбөрийн гурав дахь ээлжид банк санхүү, зөвлөх үйлчилгээ, төрийн бодлогын салбарт ажиллаж буй төгсөгчид оюутнуудтай хосолж, туршлагаа хуваалцана.",
-  },
-  {
-    id: "sudalgaanii-argazui",
-    image: "/images/event-forum.png",
-    alt: "Оюутнууд самбарын өмнө судалгааны сургалтад суралцаж байгаа нь",
-    tag: "Эрдэм шинжилгээ",
-    date: "2026 оны 7 дугаар сарын 9",
-    title: "Манлайллын академид судалгааны аргазүйн чиглэл нэмэгдлээ",
-    excerpt:
-      "Найман долоо хоногийн шинэ хөтөлбөрөөр гишүүд эрдэм шинжилгээний бичлэг, өгөгдлийн шинжилгээнд суралцана.",
-    body: "Найман долоо хоногийн шинэ хөтөлбөрөөр гишүүд эрдэм шинжилгээний бичлэг, өгөгдлийн шинжилгээ, оюутны хурал дээр илтгэл тавих ур чадварт суралцана.",
-  },
-];
+type NewsListResponse = {
+  items: NewsItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
 
-export function getNewsById(id: string): NewsItem | undefined {
-  return NEWS.find((item) => item.id === id);
+/** Нийтлэгдсэн (published) бүх мэдээг авчирна — жагсаалт/хайлт/шүүлтийг клиент талд хийхийн тулд нэг дор татна. */
+export async function getAllNews(): Promise<NewsItem[]> {
+  const data = await apiFetch<NewsListResponse>("/news?pageSize=100");
+  return data.items;
 }
 
-export function getNewsTags(): string[] {
-  return Array.from(new Set(NEWS.map((item) => item.tag)));
+export async function getNewsById(id: string): Promise<NewsItem | null> {
+  try {
+    return await apiFetch<NewsItem>(`/news/${encodeURIComponent(id)}`);
+  } catch (error) {
+    if (error instanceof ApiError) return null;
+    throw error;
+  }
 }

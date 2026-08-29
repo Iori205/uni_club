@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Search } from "lucide-react";
+import { ChevronDown, Plus, Search } from "lucide-react";
 import { useState } from "react";
 import type { ContentItem, Status } from "../../../lib/admin/types";
 import { NewsTable } from "./news-table";
@@ -12,7 +12,7 @@ export function NewsView({
   items: ContentItem[];
   onCreate: () => void;
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number, label: string) => void;
+  onDelete: (id: string, label: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<"Бүгд" | Status>("Бүгд");
@@ -52,15 +52,21 @@ export function NewsView({
             aria-label="Мэдээ хайх"
           />
         </label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value as "Бүгд" | Status)}
-          className="h-10 rounded-lg border border-input bg-background px-3 text-sm outline-none"
-        >
-          <option>Бүгд</option>
-          <option>Нийтлэгдсэн</option>
-          <option>Ноорог</option>
-        </select>
+        <div className="relative">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as "Бүгд" | Status)}
+            className="h-10 appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm outline-none"
+          >
+            <option>Бүгд</option>
+            <option>Нийтлэгдсэн</option>
+            <option>Ноорог</option>
+          </select>
+          <ChevronDown
+            className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
+        </div>
       </div>
       <p className="my-5 text-sm text-muted-foreground">
         Нийт{" "}

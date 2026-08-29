@@ -14,23 +14,19 @@ function isThisMonth(dateStr: string): boolean {
 
 export function DashboardHome({
   news,
-  activities,
   events,
   onCreate,
   onNavigate,
 }: {
   news: ContentItem[];
-  activities: ContentItem[];
   events: EventItem[];
   onCreate: () => void;
   onNavigate: (s: Section) => void;
 }) {
-  const all = [...news, ...activities, ...events];
+  const all = [...news, ...events];
   const published = all.filter((i) => i.status === "Нийтлэгдсэн").length;
   const drafts = all.filter((i) => i.status === "Ноорог").length;
-  const thisMonth = [...news, ...activities].filter((i) =>
-    isThisMonth(i.date),
-  ).length;
+  const thisMonth = news.filter((i) => isThisMonth(i.date)).length;
 
   const stats = [
     { label: "Нийт контент", value: String(all.length), icon: Globe2 },

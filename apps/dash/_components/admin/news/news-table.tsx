@@ -8,7 +8,7 @@ export function NewsTable({
 }: {
   items: ContentItem[];
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number, label: string) => void;
+  onDelete: (id: string, label: string) => void;
 }) {
   if (!items.length)
     return (

@@ -1,10 +1,11 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { EVENTS } from "../../lib/events-data";
+import { getAllEvents } from "../../lib/events-data";
 import { EventCard } from "../events/event-card";
 
-export function EventsSection() {
-  const preview = EVENTS.slice(0, 2);
+export async function EventsSection() {
+  const events = await getAllEvents().catch(() => []);
+  const preview = events.slice(0, 2);
 
   return (
     <section id="events" className="border-t border-border bg-secondary/40">
@@ -27,11 +28,13 @@ export function EventsSection() {
           </Link>
         </div>
 
-        <div className="mt-9 flex flex-col gap-5">
-          {preview.map((item) => (
-            <EventCard key={item.id} item={item} />
-          ))}
-        </div>
+        {preview.length > 0 && (
+          <div className="mt-9 flex flex-col gap-5">
+            {preview.map((item) => (
+              <EventCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

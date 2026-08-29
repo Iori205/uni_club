@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, ImagePlus } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 import type { ContentItem, Status } from "../../../lib/admin/types";
+import { ImageUploadField } from "../shared/image-upload-field";
 
 type Props = {
   item: ContentItem | null;
   onClose: () => void;
-  onSave: (data: Partial<ContentItem>) => void;
+  onSave: (data: Partial<ContentItem>) => Promise<void>;
 };
 const tags = ["Зарлал", "Хөтөлбөр", "Эрдэм шинжилгээ", "Мэдээ"];
 
@@ -35,18 +36,16 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
   }, [item]);
   const update = (key: keyof typeof form, value: string) =>
     setForm((current) => ({ ...current, [key]: value }));
-  const submit = () => {
+  const submit = async () => {
     if (!form.title.trim() || !form.date.trim() || !form.body.trim()) return;
     setSaving(true);
-    setTimeout(() => {
-      onSave(form);
-      setSaving(false);
-    }, 350);
+    await onSave(form);
+    setSaving(false);
   };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/30 p-4">
       <div
-        className="max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-xl"
+        className="scrollbar-hide max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-xl"
         role="dialog"
         aria-modal="true"
         aria-labelledby="news-form-title"
@@ -74,26 +73,11 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <label className="grid gap-2 text-sm font-medium sm:col-span-2">
             Зургийн URL
-            <input
+            <ImageUploadField
               value={form.image}
-              onChange={(e) => update("image", e.target.value)}
-              placeholder="https://..."
-              className="h-11 rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
+              onChange={(value) => update("image", value)}
+              alt="Мэдээний зурагны урьдчилсан харагдац"
             />
-            {form.image ? (
-              <img
-                src={form.image}
-                alt="Мэдээний зурагны урьдчилсан харагдац"
-                className="h-32 w-full rounded-lg object-cover"
-                onError={(e) => {
-                  e.currentTarget.style.display = "none";
-                }}
-              />
-            ) : (
-              <span className="flex h-20 items-center justify-center rounded-lg border border-dashed border-border text-muted-foreground">
-                <ImagePlus size={22} />
-              </span>
-            )}
           </label>
           <label className="grid gap-2 text-sm font-medium sm:col-span-2">
             Зургийн тайлбар
@@ -101,20 +85,26 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
               value={form.alt}
               onChange={(e) => update("alt", e.target.value)}
               placeholder="Зургийн тайлбар"
-              className="h-11 rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
             />
           </label>
           <label className="grid gap-2 text-sm font-medium">
             Таг / ангилал
-            <select
-              value={form.category}
-              onChange={(e) => update("category", e.target.value)}
-              className="h-11 rounded-lg border border-input bg-background px-3"
-            >
-              {tags.map((tag) => (
-                <option key={tag}>{tag}</option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={form.category}
+                onChange={(e) => update("category", e.target.value)}
+                className="h-11 w-full appearance-none rounded-lg border border-input bg-background pl-3 pr-9"
+              >
+                {tags.map((tag) => (
+                  <option key={tag}>{tag}</option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
           </label>
           <label className="grid gap-2 text-sm font-medium">
             Огноо
@@ -123,7 +113,7 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
               type="date"
               value={form.date}
               onChange={(e) => update("date", e.target.value)}
-              className="h-11 rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
             />
           </label>
           <label className="grid gap-2 text-sm font-medium sm:col-span-2">
@@ -133,7 +123,7 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
               autoFocus
               value={form.title}
               onChange={(e) => update("title", e.target.value)}
-              className="h-11 rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 outline-none focus:ring-4 focus:ring-primary/20"
             />
           </label>
           <label className="grid gap-2 text-sm font-medium sm:col-span-2">
@@ -143,19 +133,25 @@ export function NewsFormModal({ item, onClose, onSave }: Props) {
               rows={4}
               value={form.body}
               onChange={(e) => update("body", e.target.value)}
-              className="rounded-lg border border-input bg-background px-3 py-3 outline-none focus:ring-4 focus:ring-primary/20"
+              className="w-full rounded-lg border border-input bg-background px-3 py-3 outline-none focus:ring-4 focus:ring-primary/20"
             />
           </label>
           <label className="grid gap-2 text-sm font-medium">
             Төлөв
-            <select
-              value={form.status}
-              onChange={(e) => update("status", e.target.value as Status)}
-              className="h-11 rounded-lg border border-input bg-background px-3"
-            >
-              <option>Нийтлэгдсэн</option>
-              <option>Ноорог</option>
-            </select>
+            <div className="relative">
+              <select
+                value={form.status}
+                onChange={(e) => update("status", e.target.value as Status)}
+                className="h-11 w-full appearance-none rounded-lg border border-input bg-background pl-3 pr-9"
+              >
+                <option>Нийтлэгдсэн</option>
+                <option>Ноорог</option>
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
+            </div>
           </label>
         </div>
         <div className="mt-7 flex justify-end gap-3">

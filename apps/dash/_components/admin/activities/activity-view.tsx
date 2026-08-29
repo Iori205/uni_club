@@ -12,7 +12,7 @@ export function ActivityView({
   items: ContentItem[];
   onCreate: () => void;
   onEdit: (i: ContentItem) => void;
-  onDelete: (id: number, label: string) => void;
+  onDelete: (id: string, label: string) => void;
 }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("Бүгд");

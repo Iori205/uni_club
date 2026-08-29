@@ -2,25 +2,23 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
-import { EVENTS, getEventById } from "../../../lib/events-data";
+import { getEventById } from "../../../lib/events-data";
 import { SafeImage } from "../../../_components/ui/safe-image";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return EVENTS.map((item) => ({ slug: item.id }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const item = getEventById(slug);
+  const item = await getEventById(slug);
   if (!item) return { title: "Арга хэмжээ олдсонгүй | БСОН" };
   return { title: `${item.title} | БСОН`, description: item.excerpt };
 }
 
 export default async function EventDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getEventById(slug);
+  const item = await getEventById(slug);
   if (!item) notFound();
 
   return (
@@ -66,10 +64,7 @@ export default async function EventDetailPage({ params }: Props) {
         <p className="mt-8 rounded-xl bg-secondary/50 px-5 py-4 text-sm text-muted-foreground">
           Энэ арга хэмжээ нь бүртгэлгүй, чөлөөт оролцоотой. Дэлгэрэнгүй мэдээлэл
           авахыг хүсвэл{" "}
-          <Link
-            href="/join"
-            className="font-medium text-primary hover:underline"
-          >
+          <Link href="/join" className="font-medium text-primary hover:underline">
             бидэнтэй холбогдоно уу
           </Link>
           .

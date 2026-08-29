@@ -130,6 +130,15 @@ a {
   transform: scaleX(1);
 }
 
+/* Scroll хийж болдог хэвээр, гэхдээ scrollbar-ийг харуулахгүй (modal-уудад ашиглана). */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

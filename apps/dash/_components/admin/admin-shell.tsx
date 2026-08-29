@@ -1,18 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   ContentItem,
   ContentType,
   EventItem,
   Section,
-  Status,
 } from "../../lib/admin/types";
-import {
-  initialActivities,
-  initialEvents,
-  initialNews,
-  imagePool,
-} from "../../lib/admin/mock-data";
+import { apiFetch } from "../../lib/api-client";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
@@ -29,89 +23,120 @@ const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
   "Арга хэмжээ": "арга хэмжээг",
 };
 
+type ListResponse<T> = { items: T[] };
+
 export function AdminShell() {
   const [active, setActive] = useState<Section>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [news, setNews] = useState<ContentItem[]>(initialNews);
-  const [activities, setActivities] =
-    useState<ContentItem[]>(initialActivities);
-  const [events, setEvents] = useState<EventItem[]>(initialEvents);
+  const [news, setNews] = useState<ContentItem[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
   const [modal, setModal] = useState<{
     type: ContentType;
     item: ContentItem | EventItem | null;
   } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<{
     type: ContentType;
-    id: number;
+    id: string;
     label: string;
   } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setLoadError(false);
+    Promise.all([
+      apiFetch<ListResponse<ContentItem>>("/admin/news?pageSize=100"),
+      apiFetch<ListResponse<EventItem>>("/admin/events?pageSize=100"),
+    ])
+      .then(([newsRes, eventsRes]) => {
+        if (cancelled) return;
+        setNews(newsRes.items);
+        setEvents(eventsRes.items);
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const open = (
     type: ContentType,
     item: ContentItem | EventItem | null = null,
   ) => setModal({ type, item });
 
-  const save = (data: Partial<ContentItem>) => {
+  const save = async (data: Partial<ContentItem>) => {
     if (!modal) return;
-    const setter = modal.type === "Мэдээ" ? setNews : setActivities;
-    setter((items) =>
-      modal.item
-        ? items.map((i) =>
-            i.id === modal.item?.id
-              ? {
-                  ...i,
-                  ...data,
-                  image: data.image ?? i.image,
-                  title: data.title ?? i.title,
-                  category: data.category ?? i.category,
-                  date: data.date ?? i.date,
-                  status: data.status ?? i.status,
-                }
-              : i,
-          )
-        : [
-            {
-              id: Date.now(),
-              title: data.title ?? "",
-              category: data.category ?? "Мэдээ",
-              date: data.date ?? "2024-06-20",
-              status: (data.status ?? "Ноорог") as Status,
-              image: data.image ?? imagePool[0] ?? "",
-              alt: data.alt,
-              body: data.body,
-              location:
-                modal.type === "Үйл ажиллагаа" ? "МУИС, төв байр" : undefined,
-            },
-            ...items,
-          ],
-    );
-    setModal(null);
-  };
-  const saveEvent = (data: Omit<EventItem, "id">) => {
-    setEvents((items) =>
-      modal?.item
-        ? items.map((i) => (i.id === modal.item?.id ? { ...i, ...data } : i))
-        : [{ id: Date.now(), ...data }, ...items],
-    );
-    setModal(null);
+    try {
+      setActionError(null);
+      if (modal.item) {
+        const updated = await apiFetch<ContentItem>(
+          `/admin/news/${modal.item.id}`,
+          { method: "PATCH", body: JSON.stringify(data) },
+        );
+        setNews((items) => items.map((i) => (i.id === updated.id ? updated : i)));
+      } else {
+        const created = await apiFetch<ContentItem>("/admin/news", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        setNews((items) => [created, ...items]);
+      }
+      setModal(null);
+    } catch {
+      setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+    }
   };
 
-  const requestDelete = (
-    type: ContentType,
-    id: number,
-    label: string,
-  ) => setPendingDelete({ type, id, label });
+  const saveEvent = async (data: Omit<EventItem, "id">) => {
+    try {
+      setActionError(null);
+      if (modal?.item) {
+        const updated = await apiFetch<EventItem>(
+          `/admin/events/${modal.item.id}`,
+          { method: "PATCH", body: JSON.stringify(data) },
+        );
+        setEvents((items) => items.map((i) => (i.id === updated.id ? updated : i)));
+      } else {
+        const created = await apiFetch<EventItem>("/admin/events", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        setEvents((items) => [created, ...items]);
+      }
+      setModal(null);
+    } catch {
+      setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+    }
+  };
 
-  const confirmDelete = () => {
+  const requestDelete = (type: ContentType, id: string, label: string) =>
+    setPendingDelete({ type, id, label });
+
+  const confirmDelete = async () => {
     if (!pendingDelete) return;
     const { type, id } = pendingDelete;
-    if (type === "Арга хэмжээ")
-      setEvents((items) => items.filter((i) => i.id !== id));
-    else
-      (type === "Мэдээ" ? setNews : setActivities)((items) =>
-        items.filter((i) => i.id !== id),
-      );
-    setPendingDelete(null);
+    try {
+      setActionError(null);
+      if (type === "Арга хэмжээ") {
+        await apiFetch(`/admin/events/${id}`, { method: "DELETE" });
+        setEvents((items) => items.filter((i) => i.id !== id));
+      } else {
+        await apiFetch(`/admin/news/${id}`, { method: "DELETE" });
+        setNews((items) => items.filter((i) => i.id !== id));
+      }
+    } catch {
+      setActionError("Устгахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+    } finally {
+      setPendingDelete(null);
+    }
   };
 
   const labels: Record<Section, string> = {
@@ -136,34 +161,49 @@ export function AdminShell() {
           onMenu={() => setMobileOpen(true)}
         />
         <main className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
-          {active === "dashboard" && (
-            <DashboardHome
-              news={news}
-              activities={activities}
-              events={events}
-              onCreate={() => open("Мэдээ")}
-              onNavigate={setActive}
-            />
-          )}{" "}
-          {active === "news" && (
-            <NewsView
-              items={news}
-              onCreate={() => open("Мэдээ")}
-              onEdit={(i) => open("Мэдээ", i)}
-              onDelete={(id, label) => requestDelete("Мэдээ", id, label)}
-            />
-          )}{" "}
-          {active === "events" && (
-            <EventView
-              items={events}
-              onCreate={() => open("Арга хэмжээ")}
-              onEdit={(i) => open("Арга хэмжээ", i)}
-              onDelete={(id, label) =>
-                requestDelete("Арга хэмжээ", id, label)
-              }
-            />
-          )}{" "}
-          {active === "settings" && <SettingsView />}
+          {actionError && (
+            <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              {actionError}
+            </div>
+          )}
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Ачаалж байна...</p>
+          ) : loadError ? (
+            <p className="text-sm text-muted-foreground">
+              Дата ачаалж чадсангүй. Backend ажиллаж байгаа эсэхийг шалгаад
+              хуудсаа дахин ачаална уу.
+            </p>
+          ) : (
+            <>
+              {active === "dashboard" && (
+                <DashboardHome
+                  news={news}
+                  events={events}
+                  onCreate={() => open("Мэдээ")}
+                  onNavigate={setActive}
+                />
+              )}
+              {active === "news" && (
+                <NewsView
+                  items={news}
+                  onCreate={() => open("Мэдээ")}
+                  onEdit={(i) => open("Мэдээ", i)}
+                  onDelete={(id, label) => requestDelete("Мэдээ", id, label)}
+                />
+              )}
+              {active === "events" && (
+                <EventView
+                  items={events}
+                  onCreate={() => open("Арга хэмжээ")}
+                  onEdit={(i) => open("Арга хэмжээ", i)}
+                  onDelete={(id, label) =>
+                    requestDelete("Арга хэмжээ", id, label)
+                  }
+                />
+              )}
+              {active === "settings" && <SettingsView />}
+            </>
+          )}
         </main>
       </div>
       {modal?.type === "Мэдээ" && (
@@ -172,7 +212,7 @@ export function AdminShell() {
           onClose={() => setModal(null)}
           onSave={save}
         />
-      )}{" "}
+      )}
       {modal?.type === "Арга хэмжээ" && (
         <EventFormModal
           item={modal.item as EventItem | null}
