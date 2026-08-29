@@ -9,17 +9,16 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
 import { QueryNewsDto } from './dto/query-news.dto';
+import { ClerkAuthGuard } from '../common/clerk-auth.guard';
 
-/**
- * Admin — бүх status-той мэдээ, CRUD.
- * Одоогоор authentication ХЭРЭГЖЭЭГҮЙ (дараагийн шатанд Clerk-ээр хамгаална,
- * route бүтэц (public-аас тусдаа controller) л бэлдсэн).
- */
+/** Admin — бүх status-той мэдээ, CRUD. Clerk session шаардана (`ClerkAuthGuard`). */
+@UseGuards(ClerkAuthGuard)
 @Controller('admin/news')
 export class NewsAdminController {
   constructor(private readonly newsService: NewsService) {}

@@ -2,7 +2,7 @@
 
 import { useRef, useState, type ChangeEvent } from "react";
 import { ImagePlus, Pencil } from "lucide-react";
-import { apiFetch } from "../../../lib/api-client";
+import { useAuthedFetch } from "../../../lib/use-authed-fetch";
 
 type ImageUploadFieldProps = {
   value: string;
@@ -15,6 +15,7 @@ const ACCEPTED_TYPES = "image/jpeg,image/png,image/webp";
 /** News/Event modal-д ижил зурган upload UX (dashed зона дээр дарж native file picker нээгдэх, сонгомогц preview) — хуваалцсан нэг эх сурвалж. */
 export function ImageUploadField({ value, onChange, alt }: ImageUploadFieldProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const authedFetch = useAuthedFetch();
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(false);
 
@@ -30,7 +31,7 @@ export function ImageUploadField({ value, onChange, alt }: ImageUploadFieldProps
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const result = await apiFetch<{ url: string }>("/admin/uploads/image", {
+      const result = await authedFetch<{ url: string }>("/admin/uploads/image", {
         method: "POST",
         body: formData,
       });

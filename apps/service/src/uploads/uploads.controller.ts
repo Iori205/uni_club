@@ -6,16 +6,19 @@ import {
   ParseFilePipe,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { StorageAdapter } from './storage/storage.interface';
 import { STORAGE_ADAPTER } from './storage/storage.interface';
+import { ClerkAuthGuard } from '../common/clerk-auth.guard';
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-/** Admin — News/Event modal-ийн `ImageUploadField`-ээс дуудагдана. Одоогоор authentication ХЭРЭГЖЭЭГҮЙ. */
+/** Admin — News/Event modal-ийн `ImageUploadField`-ээс дуудагдана. Clerk session шаардана (`ClerkAuthGuard`). */
+@UseGuards(ClerkAuthGuard)
 @Controller('admin/uploads')
 export class UploadsController {
   constructor(

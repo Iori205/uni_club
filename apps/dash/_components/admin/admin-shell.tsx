@@ -1,12 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import type {
   ContentItem,
   ContentType,
   EventItem,
   Section,
 } from "../../lib/admin/types";
-import { apiFetch } from "../../lib/api-client";
+import { useAuthedFetch } from "../../lib/use-authed-fetch";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
@@ -26,6 +27,8 @@ const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
 type ListResponse<T> = { items: T[] };
 
 export function AdminShell() {
+  const { isLoaded } = useAuth();
+  const authedFetch = useAuthedFetch();
   const [active, setActive] = useState<Section>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [news, setNews] = useState<ContentItem[]>([]);
@@ -44,12 +47,13 @@ export function AdminShell() {
   } | null>(null);
 
   useEffect(() => {
+    if (!isLoaded) return;
     let cancelled = false;
     setLoading(true);
     setLoadError(false);
     Promise.all([
-      apiFetch<ListResponse<ContentItem>>("/admin/news?pageSize=100"),
-      apiFetch<ListResponse<EventItem>>("/admin/events?pageSize=100"),
+      authedFetch<ListResponse<ContentItem>>("/admin/news?pageSize=100"),
+      authedFetch<ListResponse<EventItem>>("/admin/events?pageSize=100"),
     ])
       .then(([newsRes, eventsRes]) => {
         if (cancelled) return;
@@ -65,7 +69,7 @@ export function AdminShell() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isLoaded, authedFetch]);
 
   const open = (
     type: ContentType,
@@ -77,13 +81,13 @@ export function AdminShell() {
     try {
       setActionError(null);
       if (modal.item) {
-        const updated = await apiFetch<ContentItem>(
+        const updated = await authedFetch<ContentItem>(
           `/admin/news/${modal.item.id}`,
           { method: "PATCH", body: JSON.stringify(data) },
         );
         setNews((items) => items.map((i) => (i.id === updated.id ? updated : i)));
       } else {
-        const created = await apiFetch<ContentItem>("/admin/news", {
+        const created = await authedFetch<ContentItem>("/admin/news", {
           method: "POST",
           body: JSON.stringify(data),
         });
@@ -99,13 +103,13 @@ export function AdminShell() {
     try {
       setActionError(null);
       if (modal?.item) {
-        const updated = await apiFetch<EventItem>(
+        const updated = await authedFetch<EventItem>(
           `/admin/events/${modal.item.id}`,
           { method: "PATCH", body: JSON.stringify(data) },
         );
         setEvents((items) => items.map((i) => (i.id === updated.id ? updated : i)));
       } else {
-        const created = await apiFetch<EventItem>("/admin/events", {
+        const created = await authedFetch<EventItem>("/admin/events", {
           method: "POST",
           body: JSON.stringify(data),
         });
@@ -126,10 +130,10 @@ export function AdminShell() {
     try {
       setActionError(null);
       if (type === "Арга хэмжээ") {
-        await apiFetch(`/admin/events/${id}`, { method: "DELETE" });
+        await authedFetch(`/admin/events/${id}`, { method: "DELETE" });
         setEvents((items) => items.filter((i) => i.id !== id));
       } else {
-        await apiFetch(`/admin/news/${id}`, { method: "DELETE" });
+        await authedFetch(`/admin/news/${id}`, { method: "DELETE" });
         setNews((items) => items.filter((i) => i.id !== id));
       }
     } catch {

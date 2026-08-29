@@ -1,5 +1,6 @@
 "use client";
 import { Bell, Menu } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 export function AdminHeader({
   title,
   onMenu,
@@ -21,12 +22,15 @@ export function AdminHeader({
           БСОН / <span className="text-foreground">{title}</span>
         </div>
       </div>
-      <button
-        className="rounded-lg p-2 text-muted-foreground hover:bg-secondary"
-        aria-label="Мэдэгдэл"
-      >
-        <Bell size={19} />
-      </button>
+      <div className="flex items-center gap-2">
+        <button
+          className="rounded-lg p-2 text-muted-foreground hover:bg-secondary"
+          aria-label="Мэдэгдэл"
+        >
+          <Bell size={19} />
+        </button>
+        <UserButton />
+      </div>
     </header>
   );
 }

@@ -6,11 +6,14 @@ import {
   HttpStatus,
   Param,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ContactService } from './contact.service';
 import { QueryContactDto } from './dto/query-contact.dto';
+import { ClerkAuthGuard } from '../common/clerk-auth.guard';
 
-/** Admin — ирсэн хүсэлтийн жагсаалт/устгах. Одоогоор authentication ХЭРЭГЖЭЭГҮЙ. */
+/** Admin — ирсэн хүсэлтийн жагсаалт/устгах. Clerk session шаардана (`ClerkAuthGuard`). */
+@UseGuards(ClerkAuthGuard)
 @Controller('admin/contact')
 export class ContactAdminController {
   constructor(private readonly contactService: ContactService) {}

@@ -9,16 +9,16 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { QueryEventDto } from './dto/query-event.dto';
+import { ClerkAuthGuard } from '../common/clerk-auth.guard';
 
-/**
- * Admin — бүх status-той арга хэмжээ, CRUD.
- * Одоогоор authentication ХЭРЭГЖЭЭГҮЙ (дараагийн шатанд Clerk-ээр хамгаална).
- */
+/** Admin — бүх status-той арга хэмжээ, CRUD. Clerk session шаардана (`ClerkAuthGuard`). */
+@UseGuards(ClerkAuthGuard)
 @Controller('admin/events')
 export class EventsAdminController {
   constructor(private readonly eventsService: EventsService) {}

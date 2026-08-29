@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Inter, PT_Serif } from "next/font/google";
 import "./globals.css";
@@ -36,11 +37,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="mn" className={`light ${inter.variable} ${ptSerif.variable}`}>
-      <body className="bg-background font-sans antialiased">
-        {children}
-        {process.env.NODE_ENV === "production" && <Analytics />}
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="mn" className={`light ${inter.variable} ${ptSerif.variable}`}>
+        <body className="bg-background font-sans antialiased">
+          {children}
+          {process.env.NODE_ENV === "production" && <Analytics />}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
