@@ -1,10 +1,12 @@
 import { Users, BookOpen, Megaphone, Target } from "lucide-react";
+import Link from "next/link";
 
 const DEPARTMENTS = [
   {
     icon: Users,
     title: "Удирдах зөвлөл",
     body: "Жилийн үйл ажиллагааны бодлогыг тодорхойлж, байгууллагыг багш нар, хамтрагч талуудын өмнө төлөөлж, бүх хэлтсийн ажлыг удирдан зохицуулна.",
+    href: "/board",
   },
   {
     icon: BookOpen,
@@ -25,7 +27,7 @@ const DEPARTMENTS = [
 
 export function DepartmentsSection() {
   return (
-    <section className="border-t border-border bg-background">
+    <section id="departments" className="border-t border-border bg-background">
       <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
           Хэлтсүүд
@@ -35,22 +37,41 @@ export function DepartmentsSection() {
         </h2>
 
         <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {DEPARTMENTS.map((dept) => (
-            <article
-              key={dept.title}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
-            >
-              <div className="flex size-11 items-center justify-center rounded-xl bg-accent">
-                <dept.icon className="size-5 text-primary" strokeWidth={1.75} />
-              </div>
-              <h3 className="mt-4 font-serif text-lg font-bold leading-snug text-foreground">
-                {dept.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {dept.body}
-              </p>
-            </article>
-          ))}
+          {DEPARTMENTS.map((dept) => {
+            const content = (
+              <>
+                <div className="flex size-11 items-center justify-center rounded-xl bg-accent">
+                  <dept.icon
+                    className="size-5 text-primary"
+                    strokeWidth={1.75}
+                  />
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-bold leading-snug text-foreground">
+                  {dept.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {dept.body}
+                </p>
+              </>
+            );
+
+            return dept.href ? (
+              <Link
+                key={dept.title}
+                href={dept.href}
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                {content}
+              </Link>
+            ) : (
+              <article
+                key={dept.title}
+                className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+              >
+                {content}
+              </article>
+            );
+          })}
         </div>
       </div>
     </section>
