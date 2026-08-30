@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
-import { extname, join } from 'node:path';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
+import { basename, extname, join } from 'node:path';
 import { Injectable } from '@nestjs/common';
 import type {
   StorageAdapter,
@@ -20,5 +20,18 @@ export class LocalStorageAdapter implements StorageAdapter {
     const filename = `${randomUUID()}${extname(file.originalname).toLowerCase()}`;
     await writeFile(join(this.uploadDir, filename), file.buffer);
     return { url: `${this.publicUrl}/uploads/${filename}` };
+  }
+
+  async delete(url: string): Promise<void> {
+    const prefix = `${this.publicUrl}/uploads/`;
+    if (!url.startsWith(prefix)) return;
+    // basename() зэрэгцээд "../"-ийн аль ч хэлбэрийг устгаж, uploadDir-аас гадуур файл устгахаас сэргийлнэ.
+    const filename = basename(decodeURIComponent(url.slice(prefix.length)));
+    if (!filename) return;
+    try {
+      await unlink(join(this.uploadDir, filename));
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
+    }
   }
 }

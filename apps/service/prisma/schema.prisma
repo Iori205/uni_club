@@ -57,5 +57,8 @@ model Contact {
   email     String
   phone     String?
   message   String?
+  read      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  @@index([read])
 }

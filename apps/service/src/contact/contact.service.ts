@@ -50,6 +50,15 @@ export class ContactService {
     return contact;
   }
 
+  countUnread(): Promise<number> {
+    return this.prisma.contact.count({ where: { read: false } });
+  }
+
+  async markRead(id: string): Promise<Contact> {
+    await this.findOne(id);
+    return this.prisma.contact.update({ where: { id }, data: { read: true } });
+  }
+
   async remove(id: string): Promise<void> {
     await this.findOne(id);
     await this.prisma.contact.delete({ where: { id } });

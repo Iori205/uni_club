@@ -1,7 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import { extname } from 'node:path';
 import { Injectable } from '@nestjs/common';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import type {
   StorageAdapter,
   StoredFile,
@@ -39,5 +43,15 @@ export class S3StorageAdapter implements StorageAdapter {
       }),
     );
     return { url: `${this.publicUrl.replace(/\/$/, '')}/${key}` };
+  }
+
+  async delete(url: string): Promise<void> {
+    const prefix = `${this.publicUrl.replace(/\/$/, '')}/`;
+    if (!url.startsWith(prefix)) return;
+    const key = decodeURIComponent(url.slice(prefix.length));
+    if (!key) return;
+    await this.client.send(
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: key }),
+    );
   }
 }

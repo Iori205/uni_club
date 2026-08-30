@@ -22,11 +22,11 @@ export default async function EventDetailPage({ params }: Props) {
   if (!item) notFound();
 
   return (
-    <article className="bg-background">
-      <div className="mx-auto max-w-3xl px-5 pt-8 pb-14 lg:px-8 lg:pt-10 lg:pb-16">
+    <article className="bg-background relative">
+      <div className="mx-auto max-w-3xl px-5 pt-2 pb-14 lg:px-8 lg:pt-3 lg:pb-16">
         <Link
           href="/events"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-8 md:left-14"
         >
           <ArrowLeft className="size-4" />
           Бүх арга хэмжээ рүү буцах
@@ -64,7 +64,10 @@ export default async function EventDetailPage({ params }: Props) {
         <p className="mt-8 rounded-xl bg-secondary/50 px-5 py-4 text-sm text-muted-foreground">
           Энэ арга хэмжээ нь бүртгэлгүй, чөлөөт оролцоотой. Дэлгэрэнгүй мэдээлэл
           авахыг хүсвэл{" "}
-          <Link href="/join" className="font-medium text-primary hover:underline">
+          <Link
+            href="/join"
+            className="font-medium text-primary hover:underline"
+          >
             бидэнтэй холбогдоно уу
           </Link>
           .

@@ -33,3 +33,12 @@ export type EventItem = {
 };
 export type NavItem = { id: Section; label: string; icon: React.ElementType };
 export type HomepageContent = { title: string; intro: string };
+export type ContactSubmission = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string | null;
+  read: boolean;
+  createdAt: string;
+};

@@ -27,11 +27,11 @@ export default async function NewsDetailPage({ params }: Props) {
 
   return (
     <>
-      <article className="border-b border-border bg-background">
-        <div className="mx-auto max-w-3xl px-5 pt-8 pb-14 lg:px-8 lg:pt-10 lg:pb-16">
+      <article className="border-b border-border bg-background relative">
+        <div className="mx-auto max-w-3xl px-5 pt-2 pb-14 lg:px-8 lg:pt-3 lg:pb-16">
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-8 md:left-14"
           >
             <ArrowLeft className="size-4" />
             Бүх мэдээ рүү буцах

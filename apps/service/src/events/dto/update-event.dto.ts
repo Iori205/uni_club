@@ -54,6 +54,11 @@ export class UpdateEventDto {
   @IsNotEmpty()
   location?: string;
 
+  /** Dash-ийн EventItem type-д харагдах computed талбар — сервер startTime/endTime-ээс өөрөө дахин тооцдог тул энд зөвхөн whitelist-д нэвтрүүлээд орхино. */
+  @IsOptional()
+  @IsString()
+  time?: string;
+
   /** Монгол ("Ноорог"/"Нийтлэгдсэн") болон англи (DRAFT/PUBLISHED) утга хоёуланг зөвшөөрнө. */
   @IsOptional()
   @Transform(({ value }) => normalizeStatus(value))

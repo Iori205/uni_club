@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Status } from '../../generated/prisma/client.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import { deriveExcerpt } from '../common/excerpt.util';
 import { generateUniqueSlug } from '../common/slug.util';
+import { safeDeleteImage } from '../common/safe-delete-image.util';
 import {
   paginate,
   toPaginatedResult,
@@ -18,10 +19,15 @@ import {
   type AdminNewsItem,
   type PublicNewsItem,
 } from './mappers/news.mapper';
+import { STORAGE_ADAPTER } from '../uploads/storage/storage.interface';
+import type { StorageAdapter } from '../uploads/storage/storage.interface';
 
 @Injectable()
 export class NewsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(STORAGE_ADAPTER) private readonly storage: StorageAdapter,
+  ) {}
 
   async findPublished(
     query: QueryNewsDto,
@@ -123,7 +129,7 @@ export class NewsService {
   }
 
   async update(id: string, dto: UpdateNewsDto): Promise<AdminNewsItem> {
-    await this.findOneAdmin(id);
+    const existing = await this.findOneAdmin(id);
     const news = await this.prisma.news.update({
       where: { id },
       data: {
@@ -137,11 +143,16 @@ export class NewsService {
         ...(dto.status !== undefined ? { status: dto.status } : {}),
       },
     });
+    // Image солигдсон бол хуучин Storage object-ийг устгана; өөрчлөгдөөгүй бол хэвээр үлдээнэ.
+    if (dto.image !== undefined && dto.image !== existing.image) {
+      await safeDeleteImage(this.storage, existing.image);
+    }
     return toAdminNewsItem(news);
   }
 
   async remove(id: string): Promise<void> {
-    await this.findOneAdmin(id);
+    const existing = await this.findOneAdmin(id);
     await this.prisma.news.delete({ where: { id } });
+    await safeDeleteImage(this.storage, existing.image);
   }
 }

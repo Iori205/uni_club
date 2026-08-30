@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -23,9 +24,20 @@ export class ContactAdminController {
     return this.contactService.findAll(query);
   }
 
+  // "unread-count" нь ":id" route-той мөргөлдөхгүйн тулд заавал :id-ээс өмнө байх ёстой.
+  @Get('unread-count')
+  async unreadCount(): Promise<{ count: number }> {
+    return { count: await this.contactService.countUnread() };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.contactService.findOne(id);
+  }
+
+  @Patch(':id/read')
+  markRead(@Param('id') id: string) {
+    return this.contactService.markRead(id);
   }
 
   @Delete(':id')

@@ -104,8 +104,8 @@ export function SiteFooter() {
               <li className="flex gap-3">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
                 <span className="text-sm">
-                  МУИС, Бизнесийн сургууль, 5 дугаар байр, Их сургуулийн гудамж
-                  1, Улаанбаатар 14201
+                  МУИС, Бизнесийн сургууль, 4 дугаар байр, Их сургуулийн гудамж
+                  1, Улаанбаатар 14192
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -114,7 +114,7 @@ export function SiteFooter() {
                   href="mailto:bson@num.edu.mn"
                   className="transition-colors hover:text-primary"
                 >
-                  bson@num.edu.mn
+                  bsonclub@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">
@@ -123,11 +123,11 @@ export function SiteFooter() {
                   href="tel:+97677307730"
                   className="transition-colors hover:text-primary"
                 >
-                  +976 7730 7730
+                  +976 8911 8686
                 </a>
               </li>
             </ul>
-            <div className="mt-6 flex items-center gap-3">
+            <div className="mt-6 flex items-center gap-3 ">
               {[
                 { icon: FacebookIcon, label: "Facebook" },
                 { icon: InstagramIcon, label: "Instagram" },

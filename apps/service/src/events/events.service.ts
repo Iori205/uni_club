@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { Status } from '../../generated/prisma/client.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import { deriveExcerpt } from '../common/excerpt.util';
 import { generateUniqueSlug } from '../common/slug.util';
+import { safeDeleteImage } from '../common/safe-delete-image.util';
 import {
   paginate,
   toPaginatedResult,
@@ -22,6 +24,8 @@ import {
   type AdminEventItem,
   type PublicEventItem,
 } from './mappers/event.mapper';
+import { STORAGE_ADAPTER } from '../uploads/storage/storage.interface';
+import type { StorageAdapter } from '../uploads/storage/storage.interface';
 
 function assertTimeOrder(startTime?: string, endTime?: string) {
   if (startTime && endTime && endTime < startTime) {
@@ -31,7 +35,10 @@ function assertTimeOrder(startTime?: string, endTime?: string) {
 
 @Injectable()
 export class EventsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(STORAGE_ADAPTER) private readonly storage: StorageAdapter,
+  ) {}
 
   async findPublished(
     query: QueryEventDto,
@@ -160,11 +167,16 @@ export class EventsService {
         ...(dto.status !== undefined ? { status: dto.status } : {}),
       },
     });
+    // Image солигдсон бол хуучин Storage object-ийг устгана; өөрчлөгдөөгүй бол хэвээр үлдээнэ.
+    if (dto.image !== undefined && dto.image !== existing.image) {
+      await safeDeleteImage(this.storage, existing.image);
+    }
     return toAdminEventItem(event);
   }
 
   async remove(id: string): Promise<void> {
-    await this.findOneAdmin(id);
+    const existing = await this.findOneAdmin(id);
     await this.prisma.event.delete({ where: { id } });
+    await safeDeleteImage(this.storage, existing.image);
   }
 }
