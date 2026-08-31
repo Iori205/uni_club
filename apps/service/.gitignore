@@ -10,3 +10,5 @@ coverage
 # Dev үеийн local disk image storage (STORAGE_DRIVER=local)
 /uploads/*
 !/uploads/.gitkeep
+.vercel
+.env*
