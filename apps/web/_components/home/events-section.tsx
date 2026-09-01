@@ -14,7 +14,7 @@ export async function EventsSection() {
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
               Удахгүй болох үйл ажиллагаа
             </p>
-            <h2 className="mt-3 font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+            <h2 className="mt-3 font-serif text-2xl font-normal tracking-tight text-foreground sm:text-3xl lg:text-4xl">
               Кампус дээр юу болох вэ
             </h2>
           </div>
@@ -26,8 +26,9 @@ export async function EventsSection() {
             <ArrowRight className="size-4" />
           </Link>
         </div>
-
-        <EventsSectionLive initialEvents={events} />
+        <div className="mx-auto max-w-6xl">
+          <EventsSectionLive initialEvents={events} />
+        </div>
       </div>
     </section>
   );

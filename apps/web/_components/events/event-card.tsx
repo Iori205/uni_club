@@ -5,13 +5,13 @@ import { SafeImage } from "../ui/safe-image";
 
 export function EventCard({ item }: { item: EventItem }) {
   return (
-    <article className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm md:grid-cols-[minmax(0,320px)_1fr]">
+    <article className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm md:grid-cols-[minmax(0,340px)_1fr]">
       <SafeImage
         src={item.image}
         alt={item.alt}
         className="h-48 w-full object-cover md:h-56"
       />
-      <div className="p-6 lg:p-7">
+      <div className="p-6 lg:p-8">
         <div className="flex flex-wrap items-center gap-x-10 gap-y-2 text-sm text-foreground/80">
           <span className="inline-flex items-center gap-2">
             <Calendar className="size-4 text-primary" />

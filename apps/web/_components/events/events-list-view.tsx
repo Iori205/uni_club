@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { getAllEvents, parseMongolianDate, type EventItem } from "../../lib/events-data";
+import {
+  getAllEvents,
+  parseMongolianDate,
+  type EventItem,
+} from "../../lib/events-data";
 import { EventCard } from "./event-card";
 import { EmptyState } from "../ui/empty-state";
 import { EventCardSkeleton } from "../ui/skeleton";
@@ -40,7 +44,10 @@ export function EventsListView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const refreshSilently = useCallback(() => loadEvents({ silent: true }), [loadEvents]);
+  const refreshSilently = useCallback(
+    () => loadEvents({ silent: true }),
+    [loadEvents],
+  );
   useRealtimeRefresh("Event", refreshSilently);
 
   const filtered = useMemo(() => {
@@ -81,7 +88,7 @@ export function EventsListView() {
       </section>
 
       <section className="bg-background">
-        <div className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
+        <div className="mx-auto max-w-5xl px-5 py-10 lg:px-8">
           <div className="flex flex-wrap items-center gap-3">
             <input
               type="search"
@@ -114,7 +121,9 @@ export function EventsListView() {
               />
             </div>
             <p className="shrink-0 text-sm text-muted-foreground sm:ml-auto">
-              {loading ? "Уншиж байна..." : `${filtered.length} арга хэмжээ олдлоо`}
+              {loading
+                ? "Уншиж байна..."
+                : `${filtered.length} арга хэмжээ олдлоо`}
             </p>
           </div>
 
@@ -133,14 +142,18 @@ export function EventsListView() {
               <EmptyState message="Хайлтад тохирох арга хэмжээ олдсонгүй." />
             </div>
           ) : (
-            <div className="mt-8 flex max-w-4xl flex-col gap-5">
+            <div className="mt-8 flex max-w-5xl flex-col gap-5">
               {visible.map((item) => (
                 <EventCard key={item.id} item={item} />
               ))}
             </div>
           )}
 
-          <Pagination page={page} pageCount={pageCount} onPageChange={setPage} />
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
         </div>
       </section>
     </>

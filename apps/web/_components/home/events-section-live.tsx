@@ -4,7 +4,11 @@ import { getAllEvents, type EventItem } from "../../lib/events-data";
 import { EventCard } from "../events/event-card";
 import { useRealtimeRefresh } from "../../lib/use-realtime-refresh";
 
-export function EventsSectionLive({ initialEvents }: { initialEvents: EventItem[] }) {
+export function EventsSectionLive({
+  initialEvents,
+}: {
+  initialEvents: EventItem[];
+}) {
   const [events, setEvents] = useState(initialEvents);
 
   const refresh = useCallback(() => {

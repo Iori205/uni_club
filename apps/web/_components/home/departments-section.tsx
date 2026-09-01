@@ -32,7 +32,7 @@ export function DepartmentsSection() {
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
           Хэлтсүүд
         </p>
-        <h2 className="mt-3 font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+        <h2 className="mt-3 font-serif text-2xl font-normal tracking-tight text-foreground sm:text-3xl lg:text-4xl">
           Байгууллага хэрхэн ажилладаг вэ
         </h2>
 
