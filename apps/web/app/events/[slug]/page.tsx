@@ -65,7 +65,7 @@ export default async function EventDetailPage({ params }: Props) {
           Энэ арга хэмжээ нь бүртгэлгүй, чөлөөт оролцоотой. Дэлгэрэнгүй мэдээлэл
           авахыг хүсвэл{" "}
           <Link
-            href="/join"
+            href="/#contact"
             className="font-medium text-primary hover:underline"
           >
             бидэнтэй холбогдоно уу

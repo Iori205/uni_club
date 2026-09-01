@@ -1,11 +1,10 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { getAllNews } from "../../lib/news-data";
-import { NewsCard } from "../news/news-card";
+import { NewsSectionLive } from "./news-section-live";
 
 export async function NewsSection() {
   const news = await getAllNews().catch(() => []);
-  const preview = news.slice(0, 3);
 
   return (
     <section id="news" className="border-t border-border bg-background">
@@ -28,13 +27,7 @@ export async function NewsSection() {
           </Link>
         </div>
 
-        {preview.length > 0 && (
-          <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {preview.map((item) => (
-              <NewsCard key={item.id} item={item} />
-            ))}
-          </div>
-        )}
+        <NewsSectionLive initialNews={news} />
       </div>
     </section>
   );

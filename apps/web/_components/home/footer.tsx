@@ -127,19 +127,27 @@ export function SiteFooter() {
                 </a>
               </li>
             </ul>
-            <div className="mt-6 flex items-center gap-3 ">
+            <div className="mt-6 flex items-center gap-3">
               {[
                 { icon: FacebookIcon, label: "Facebook" },
                 { icon: InstagramIcon, label: "Instagram" },
                 { icon: LinkedinIcon, label: "LinkedIn" },
               ].map((social) => (
-                <span
-                  key={social.label}
-                  aria-label={`${social.label} (удахгүй нэмэгдэнэ)`}
-                  title={`${social.label} — удахгүй нэмэгдэнэ`}
-                  className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground/50"
-                >
-                  <social.icon className="size-5" />
+                <span key={social.label} className="group/social relative">
+                  <span
+                    tabIndex={0}
+                    aria-label={`${social.label} (удахгүй нэмэгдэнэ)`}
+                    title={`${social.label} — удахгүй нэмэгдэнэ`}
+                    className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground/50 transition-colors duration-200 hover:border-primary/40 hover:text-primary focus-visible:border-primary/40 focus-visible:text-primary focus-visible:outline-none"
+                  >
+                    <social.icon className="size-5" />
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-opacity duration-200 group-hover/social:opacity-100 group-focus-within/social:opacity-100"
+                  >
+                    {social.label} — удахгүй
+                  </span>
                 </span>
               ))}
             </div>

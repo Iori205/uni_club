@@ -4,7 +4,6 @@ import { NewsSection } from "../_components/home/news-section";
 import { EventsSection } from "../_components/home/events-section";
 import { DepartmentsSection } from "../_components/home/departments-section";
 import { StatsSection } from "../_components/home/statistics-section";
-import { CtaSection } from "../_components/home/cta-section";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +16,6 @@ export default function Home() {
       <EventsSection />
       <DepartmentsSection />
       <StatsSection />
-      <CtaSection />
     </>
   );
 }

@@ -8,6 +8,7 @@ import type {
   Section,
 } from "../../lib/admin/types";
 import { useAuthedFetch } from "../../lib/use-authed-fetch";
+import { normalizeStatus } from "../../lib/admin/normalize-status";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
@@ -57,8 +58,12 @@ export function AdminShell() {
     ])
       .then(([newsRes, eventsRes]) => {
         if (cancelled) return;
-        setNews(newsRes.items);
-        setEvents(eventsRes.items);
+        setNews(
+          newsRes.items.map((i) => ({ ...i, status: normalizeStatus(i.status) })),
+        );
+        setEvents(
+          eventsRes.items.map((i) => ({ ...i, status: normalizeStatus(i.status) })),
+        );
       })
       .catch(() => {
         if (!cancelled) setLoadError(true);
@@ -85,12 +90,14 @@ export function AdminShell() {
           `/admin/news/${modal.item.id}`,
           { method: "PATCH", body: JSON.stringify(data) },
         );
+        updated.status = normalizeStatus(updated.status);
         setNews((items) => items.map((i) => (i.id === updated.id ? updated : i)));
       } else {
         const created = await authedFetch<ContentItem>("/admin/news", {
           method: "POST",
           body: JSON.stringify(data),
         });
+        created.status = normalizeStatus(created.status);
         setNews((items) => [created, ...items]);
       }
       setModal(null);
@@ -107,12 +114,14 @@ export function AdminShell() {
           `/admin/events/${modal.item.id}`,
           { method: "PATCH", body: JSON.stringify(data) },
         );
+        updated.status = normalizeStatus(updated.status);
         setEvents((items) => items.map((i) => (i.id === updated.id ? updated : i)));
       } else {
         const created = await authedFetch<EventItem>("/admin/events", {
           method: "POST",
           body: JSON.stringify(data),
         });
+        created.status = normalizeStatus(created.status);
         setEvents((items) => [created, ...items]);
       }
       setModal(null);

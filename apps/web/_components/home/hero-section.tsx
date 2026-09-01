@@ -19,10 +19,10 @@ export function HeroSection() {
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <LinkButton
-              href="/join"
+              href="/events"
               className="h-10 rounded-full bg-primary px-8 text-base font-medium text-primary-foreground hover:bg-primary/90"
             >
-              БСОН-д нэгдэх
+              Арга хэмжээ
             </LinkButton>
             <LinkButton
               href="/news"

@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LinkButton } from "../ui/button";
 import { BsonLogo } from "./brand-mark";
 
 const NAV_ITEMS = [
@@ -28,8 +27,8 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 lg:px-6 py-4">
-        <Link href="/" aria-label="БСОН нүүр хуудас">
+      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 lg:px-6 py-3">
+        <Link href="/" aria-label="БСОН нүүр хуудас" className="justify-self-start">
           <BsonLogo />
         </Link>
 
@@ -48,18 +47,9 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden lg:block">
-          <LinkButton
-            href="/join"
-            className="rounded-full bg-primary px-2 py-1 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
-          >
-            БСОН-д нэгдэх
-          </LinkButton>
-        </div>
-
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center rounded-md text-foreground lg:hidden"
+          className="inline-flex size-10 items-center justify-center justify-self-end rounded-md text-foreground lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Цэс хаах" : "Цэс нээх"}
           aria-expanded={open}
@@ -84,13 +74,6 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <LinkButton
-              href="/join"
-              onClick={() => setOpen(false)}
-              className="mt-2 w-full rounded-full bg-primary py-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              БСОН-д нэгдэх
-            </LinkButton>
           </nav>
         </div>
       )}

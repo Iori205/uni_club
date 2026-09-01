@@ -84,16 +84,28 @@ export function DashboardHome({
           </button>
         </div>
         <div className="mt-5 grid gap-3">
+          {news.length === 0 && (
+            <p className="text-sm text-muted-foreground">
+              Одоогоор мэдээ байхгүй байна.
+            </p>
+          )}
           {news.slice(0, 3).map((i) => (
             <div
               key={i.id}
               className="flex items-center gap-3 border-t border-border pt-3"
             >
-              <img
-                src={i.image}
-                alt=""
-                className="size-12 rounded-lg object-cover"
-              />
+              {i.image ? (
+                <img
+                  src={i.image}
+                  alt=""
+                  className="size-12 shrink-0 rounded-lg object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="size-12 shrink-0 rounded-lg bg-secondary" />
+              )}
               <p className="truncate text-sm font-medium">{i.title}</p>
             </div>
           ))}

@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { getAllNews, type NewsItem } from "../../lib/news-data";
 import { NewsCard } from "./news-card";
 import { EmptyState } from "../ui/empty-state";
+import { NewsCardSkeleton } from "../ui/skeleton";
 import { Pagination } from "../ui/pagination";
+import { useRealtimeRefresh } from "../../lib/use-realtime-refresh";
 
 const PAGE_SIZE = 9;
 
@@ -17,24 +19,28 @@ export function NewsListView() {
   const [tag, setTag] = useState("Бүгд");
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(false);
-    getAllNews()
-      .then((items) => {
-        if (!cancelled) setNews(items);
-      })
+  const loadNews = useCallback((options?: { silent?: boolean }) => {
+    if (!options?.silent) {
+      setLoading(true);
+      setError(false);
+    }
+    return getAllNews()
+      .then((items) => setNews(items))
       .catch(() => {
-        if (!cancelled) setError(true);
+        if (!options?.silent) setError(true);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!options?.silent) setLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(() => {
+    loadNews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const refreshSilently = useCallback(() => loadNews({ silent: true }), [loadNews]);
+  useRealtimeRefresh("News", refreshSilently);
 
   const tags = useMemo(
     () => ["Бүгд", ...Array.from(new Set(news.map((item) => item.tag)))],
@@ -110,8 +116,10 @@ export function NewsListView() {
           </div>
 
           {loading ? (
-            <div className="mt-8">
-              <EmptyState message="Мэдээ ачаалж байна..." />
+            <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <NewsCardSkeleton key={i} />
+              ))}
             </div>
           ) : error ? (
             <div className="mt-8">

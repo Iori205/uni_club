@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { getAllEvents, parseMongolianDate, type EventItem } from "../../lib/events-data";
 import { EventCard } from "./event-card";
 import { EmptyState } from "../ui/empty-state";
+import { EventCardSkeleton } from "../ui/skeleton";
 import { Pagination } from "../ui/pagination";
+import { useRealtimeRefresh } from "../../lib/use-realtime-refresh";
 
 const PAGE_SIZE = 6;
 type TimeFilter = "Бүгд" | "Ирээдүйн" | "Өнгөрсөн";
@@ -18,24 +20,28 @@ export function EventsListView() {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("Бүгд");
   const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(false);
-    getAllEvents()
-      .then((items) => {
-        if (!cancelled) setEvents(items);
-      })
+  const loadEvents = useCallback((options?: { silent?: boolean }) => {
+    if (!options?.silent) {
+      setLoading(true);
+      setError(false);
+    }
+    return getAllEvents()
+      .then((items) => setEvents(items))
       .catch(() => {
-        if (!cancelled) setError(true);
+        if (!options?.silent) setError(true);
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!options?.silent) setLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(() => {
+    loadEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const refreshSilently = useCallback(() => loadEvents({ silent: true }), [loadEvents]);
+  useRealtimeRefresh("Event", refreshSilently);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -113,8 +119,10 @@ export function EventsListView() {
           </div>
 
           {loading ? (
-            <div className="mt-8">
-              <EmptyState message="Арга хэмжээ ачаалж байна..." />
+            <div className="mt-8 flex max-w-4xl flex-col gap-5">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <EventCardSkeleton key={i} />
+              ))}
             </div>
           ) : error ? (
             <div className="mt-8">
