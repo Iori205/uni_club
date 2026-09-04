@@ -5,6 +5,8 @@ import { getBoardMembers } from "../../lib/board-data";
 import { LightboxImage } from "../../_components/ui/lightbox-image";
 import { EmptyState } from "../../_components/ui/empty-state";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Удирдах зөвлөл | БСОН",
   description: "БСОН-ы удирдах зөвлөлийн гишүүдийн танилцуулга.",
