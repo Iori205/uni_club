@@ -5,6 +5,7 @@ import type {
   ContentItem,
   ContentType,
   EventItem,
+  MemberItem,
   Section,
 } from "../../lib/admin/types";
 import { useAuthedFetch } from "../../lib/use-authed-fetch";
@@ -15,7 +16,8 @@ import { DashboardHome } from "./dashboard-home";
 import { NewsView } from "./news/news-view";
 import EventView from "./events/event-view";
 import EventFormModal from "./events/event-modal";
-import { SettingsView } from "./settings/settings-view";
+import { MemberView } from "./members/member-view";
+import MemberFormModal from "./members/member-modal";
 import { NewsFormModal } from "./news/news-modal";
 import { ConfirmDialog } from "./shared/confirm-dialog";
 
@@ -23,6 +25,7 @@ const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
   Мэдээ: "мэдээг",
   "Үйл ажиллагаа": "үйл ажиллагааг",
   "Арга хэмжээ": "арга хэмжээг",
+  Гишүүн: "гишүүнийг",
 };
 
 type ListResponse<T> = { items: T[] };
@@ -34,12 +37,13 @@ export function AdminShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [news, setNews] = useState<ContentItem[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [members, setMembers] = useState<MemberItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [modal, setModal] = useState<{
     type: ContentType;
-    item: ContentItem | EventItem | null;
+    item: ContentItem | EventItem | MemberItem | null;
   } | null>(null);
   const [pendingDelete, setPendingDelete] = useState<{
     type: ContentType;
@@ -55,8 +59,9 @@ export function AdminShell() {
     Promise.all([
       authedFetch<ListResponse<ContentItem>>("/admin/news?pageSize=100"),
       authedFetch<ListResponse<EventItem>>("/admin/events?pageSize=100"),
+      authedFetch<ListResponse<MemberItem>>("/admin/members?pageSize=100"),
     ])
-      .then(([newsRes, eventsRes]) => {
+      .then(([newsRes, eventsRes, membersRes]) => {
         if (cancelled) return;
         setNews(
           newsRes.items.map((i) => ({ ...i, status: normalizeStatus(i.status) })),
@@ -64,6 +69,7 @@ export function AdminShell() {
         setEvents(
           eventsRes.items.map((i) => ({ ...i, status: normalizeStatus(i.status) })),
         );
+        setMembers(membersRes.items);
       })
       .catch(() => {
         if (!cancelled) setLoadError(true);
@@ -78,7 +84,7 @@ export function AdminShell() {
 
   const open = (
     type: ContentType,
-    item: ContentItem | EventItem | null = null,
+    item: ContentItem | EventItem | MemberItem | null = null,
   ) => setModal({ type, item });
 
   const save = async (data: Partial<ContentItem>) => {
@@ -130,6 +136,35 @@ export function AdminShell() {
     }
   };
 
+  const saveMember = async (data: Partial<MemberItem>) => {
+    if (!modal) return;
+    try {
+      setActionError(null);
+      if (modal.item) {
+        const updated = await authedFetch<MemberItem>(
+          `/admin/members/${modal.item.id}`,
+          { method: "PATCH", body: JSON.stringify(data) },
+        );
+        setMembers((items) =>
+          items
+            .map((i) => (i.id === updated.id ? updated : i))
+            .sort((a, b) => a.sortOrder - b.sortOrder),
+        );
+      } else {
+        const created = await authedFetch<MemberItem>("/admin/members", {
+          method: "POST",
+          body: JSON.stringify(data),
+        });
+        setMembers((items) =>
+          [created, ...items].sort((a, b) => a.sortOrder - b.sortOrder),
+        );
+      }
+      setModal(null);
+    } catch {
+      setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+    }
+  };
+
   const requestDelete = (type: ContentType, id: string, label: string) =>
     setPendingDelete({ type, id, label });
 
@@ -141,6 +176,9 @@ export function AdminShell() {
       if (type === "Арга хэмжээ") {
         await authedFetch(`/admin/events/${id}`, { method: "DELETE" });
         setEvents((items) => items.filter((i) => i.id !== id));
+      } else if (type === "Гишүүн") {
+        await authedFetch(`/admin/members/${id}`, { method: "DELETE" });
+        setMembers((items) => items.filter((i) => i.id !== id));
       } else {
         await authedFetch(`/admin/news/${id}`, { method: "DELETE" });
         setNews((items) => items.filter((i) => i.id !== id));
@@ -157,8 +195,8 @@ export function AdminShell() {
     news: "Мэдээ",
     activities: "Үйл ажиллагаа",
     events: "Арга хэмжээ",
+    members: "Удирдах зөвлөл",
     homepage: "Нүүр хуудас",
-    settings: "Тохиргоо",
   };
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -214,7 +252,14 @@ export function AdminShell() {
                   }
                 />
               )}
-              {active === "settings" && <SettingsView />}
+              {active === "members" && (
+                <MemberView
+                  items={members}
+                  onCreate={() => open("Гишүүн")}
+                  onEdit={(i) => open("Гишүүн", i)}
+                  onDelete={(id, label) => requestDelete("Гишүүн", id, label)}
+                />
+              )}
             </>
           )}
         </main>
@@ -231,6 +276,13 @@ export function AdminShell() {
           item={modal.item as EventItem | null}
           onClose={() => setModal(null)}
           onSave={saveEvent}
+        />
+      )}
+      {modal?.type === "Гишүүн" && (
+        <MemberFormModal
+          item={modal.item as MemberItem | null}
+          onClose={() => setModal(null)}
+          onSave={saveMember}
         />
       )}
       {pendingDelete && (

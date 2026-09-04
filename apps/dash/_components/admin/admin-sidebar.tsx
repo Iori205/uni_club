@@ -1,22 +1,19 @@
 "use client";
-import { useState } from "react";
 import Image from "next/image";
 import {
-  BookOpen,
   CalendarDays,
   ChevronRight,
   FilePenLine,
   LayoutDashboard,
-  Settings,
+  Users,
   X,
 } from "lucide-react";
 import type { Section } from "../../lib/admin/types";
-import { HelpCenterModal } from "./shared/help-center-modal";
 const nav = [
   { id: "dashboard", label: "Хянах самбар", icon: LayoutDashboard },
   { id: "news", label: "Мэдээ", icon: FilePenLine },
   { id: "events", label: "Арга хэмжээ", icon: CalendarDays },
-  { id: "settings", label: "Тохиргоо", icon: Settings },
+  { id: "members", label: "Удирдах зөвлөл", icon: Users },
 ] as const;
 export function AdminSidebar({
   active,
@@ -29,7 +26,6 @@ export function AdminSidebar({
   mobileOpen: boolean;
   onClose: () => void;
 }) {
-  const [helpOpen, setHelpOpen] = useState(false);
   return (
     <>
       <button
@@ -86,20 +82,7 @@ export function AdminSidebar({
             </button>
           ))}
         </nav>
-        <div className="border-t border-border pt-5">
-          <p className="px-3 text-xs text-muted-foreground">
-            Тусламж хэрэгтэй юу?
-          </p>
-          <button
-            onClick={() => setHelpOpen(true)}
-            className="mt-2 flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-primary hover:bg-secondary"
-          >
-            <BookOpen size={16} />
-            Тусламжийн төв
-          </button>
-        </div>
       </aside>
-      {helpOpen && <HelpCenterModal onClose={() => setHelpOpen(false)} />}
     </>
   );
 }

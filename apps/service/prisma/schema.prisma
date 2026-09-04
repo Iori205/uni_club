@@ -1,4 +1,4 @@
-// Prisma schema — uni_club backend (News / Event)
+// Prisma schema — uni_club backend (News / Event / Member)
 // See: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -30,6 +30,19 @@ model News {
   updatedAt DateTime @updatedAt
 
   @@index([status])
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  image     String?
+  bio       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
 }
 
 model Event {
