@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,10 +25,19 @@ export function SiteHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
+  useEffect(() => {
+    if (!open) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 lg:px-6 py-3">
-        <Link href="/" aria-label="БСОН нүүр хуудас" className="justify-self-start">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:px-6">
+        <Link href="/" aria-label="БСОН нүүр хуудас" className="min-w-0 shrink">
           <BsonLogo />
         </Link>
 
@@ -49,7 +58,7 @@ export function SiteHeader() {
 
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center justify-self-end rounded-md text-foreground lg:hidden"
+          className="inline-flex size-10 shrink-0 items-center justify-center rounded-md text-foreground lg:invisible"
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Цэс хаах" : "Цэс нээх"}
           aria-expanded={open}
@@ -58,25 +67,32 @@ export function SiteHeader() {
         </button>
       </div>
 
-      {open && (
-        <div className="border-t border-border bg-background lg:hidden">
+      <div
+        className={`grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none lg:hidden ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+      >
+        <div
+          inert={!open}
+          aria-hidden={!open}
+          className="overflow-hidden border-t border-border bg-background"
+        >
           <nav
             className="mx-auto flex max-w-7xl flex-col gap-1 px-5 py-4"
             aria-label="Гар утасны цэс"
           >
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map((item, index) => (
               <Link
                 key={item.label}
                 href={navHref(item.hash, isHome)}
                 onClick={() => setOpen(false)}
-                className="rounded-md px-2 py-2.5 text-[15px] font-medium text-foreground/80 transition-colors hover:bg-secondary hover:text-primary"
+                style={{ transitionDelay: open ? `${index * 40}ms` : "0ms" }}
+                className={`rounded-md px-2 py-2.5 text-[15px] font-medium text-foreground/80 transition-[opacity,transform,background-color,color] duration-200 ease-out hover:bg-secondary hover:text-primary motion-reduce:transition-none ${open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"}`}
               >
                 {item.label}
               </Link>
             ))}
           </nav>
         </div>
-      )}
+      </div>
     </header>
   );
 }

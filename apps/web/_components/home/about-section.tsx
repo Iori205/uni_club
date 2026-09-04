@@ -43,7 +43,7 @@ const FEATURES = [
 export function AboutSection() {
   return (
     <section id="about" className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-20">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
             БСОН-ы тухай
@@ -59,11 +59,11 @@ export function AboutSection() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((feature) => (
             <article
               key={feature.title}
-              className="rounded-2xl border border-border bg-card py-3 px-4 shadow-sm transition-shadow hover:shadow-md"
+              className="min-w-0 max-w-full rounded-2xl border border-border bg-card py-3 px-4 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="flex size-11 items-center justify-center rounded-xl bg-accent">
                 <feature.icon

@@ -8,7 +8,7 @@ export async function EventsSection() {
 
   return (
     <section id="events" className="border-t border-border bg-secondary/40">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
@@ -20,10 +20,10 @@ export async function EventsSection() {
           </div>
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
           >
             Бүх арга хэмжээ
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" />
           </Link>
         </div>
         <div className="mx-auto max-w-6xl">

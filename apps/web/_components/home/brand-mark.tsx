@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export function BsonLogo({ className }: { className?: string }) {
   return (
-    <div className={cn("flex items-center gap-3", className)}>
+    <div className={cn("flex min-w-0 items-center gap-3", className)}>
       {/* <div className="flex size-10 items-center justify-center">
         <svg
           viewBox="0 0 40 44"
@@ -42,13 +42,13 @@ export function BsonLogo({ className }: { className?: string }) {
         alt="БСОН logo"
         width={32}
         height={32}
-        className="h-9 w-8 rounded-sm"
+        className="h-8 w-8 shrink-0 rounded-sm"
       />
-      <div className="flex flex-col leading-none">
-        <span className="font-serif text-base font-bold tracking-tight text-foreground">
+      <div className="flex min-w-0 flex-col leading-none">
+        <span className="truncate font-serif text-base font-bold tracking-tight text-foreground">
           БСОН
         </span>
-        <span className="mt-0.5 text-[11px] text-muted-foreground">
+        <span className="mt-0.5 truncate text-[11px] text-muted-foreground">
           Бизнесийн сургууль · МУИС
         </span>
       </div>

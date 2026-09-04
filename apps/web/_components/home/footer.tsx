@@ -35,18 +35,18 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-function LinkedinIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M4.98 3.5A2.5 2.5 0 1 1 2.5 6 2.5 2.5 0 0 1 4.98 3.5ZM2.9 8.9h4.16V21H2.9Zm6.55 0h3.99v1.65h.06a4.37 4.37 0 0 1 3.93-2.16c4.2 0 4.98 2.77 4.98 6.37V21h-4.15v-5.36c0-1.28-.02-2.92-1.78-2.92s-2.05 1.39-2.05 2.83V21H9.45Z" />
-    </svg>
-  );
-}
+const SOCIALS = [
+  {
+    icon: FacebookIcon,
+    label: "Facebook",
+    href: "https://www.facebook.com/numbsonk/",
+  },
+  {
+    icon: InstagramIcon,
+    label: "Instagram",
+    href: "https://www.instagram.com/bsonk.official",
+  },
+] as const;
 
 const MENU = [
   { label: "Нүүр", hash: null },
@@ -128,27 +128,18 @@ export function SiteFooter() {
               </li>
             </ul>
             <div className="mt-6 flex items-center gap-3">
-              {[
-                { icon: FacebookIcon, label: "Facebook" },
-                { icon: InstagramIcon, label: "Instagram" },
-                { icon: LinkedinIcon, label: "LinkedIn" },
-              ].map((social) => (
-                <span key={social.label} className="group/social relative">
-                  <span
-                    tabIndex={0}
-                    aria-label={`${social.label} (удахгүй нэмэгдэнэ)`}
-                    title={`${social.label} — удахгүй нэмэгдэнэ`}
-                    className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground/50 transition-colors duration-200 hover:border-primary/40 hover:text-primary focus-visible:border-primary/40 focus-visible:text-primary focus-visible:outline-none"
-                  >
-                    <social.icon className="size-5" />
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-opacity duration-200 group-hover/social:opacity-100 group-focus-within/social:opacity-100"
-                  >
-                    {social.label} — удахгүй
-                  </span>
-                </span>
+              {SOCIALS.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  title={social.label}
+                  className="flex size-10 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-200 hover:border-primary/40 hover:text-primary focus-visible:border-primary/40 focus-visible:text-primary focus-visible:outline-none"
+                >
+                  <social.icon className="size-5" />
+                </a>
               ))}
             </div>
           </div>

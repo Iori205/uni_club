@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata, Viewport } from "next";
 import { Inter, PT_Serif } from "next/font/google";
+import { ToastProvider } from "../_components/ui/toast";
 import "./globals.css";
 
 const inter = Inter({
@@ -40,7 +41,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="mn" className={`light ${inter.variable} ${ptSerif.variable}`}>
         <body className="bg-background font-sans antialiased">
-          {children}
+          <ToastProvider>{children}</ToastProvider>
           {process.env.NODE_ENV === "production" && <Analytics />}
         </body>
       </html>

@@ -22,7 +22,7 @@ export function NewsTable({
     );
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="overflow-x-auto">
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[760px] text-left">
           <thead className="border-b border-border bg-secondary/50">
             <tr className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -62,14 +62,14 @@ export function NewsTable({
                     <button
                       aria-label={`${i.title} засах`}
                       onClick={() => onEdit(i)}
-                      className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-primary active:scale-[0.98]"
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       aria-label={`${i.title} устгах`}
                       onClick={() => onDelete(i.id, i.title)}
-                      className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-destructive"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive active:scale-[0.98]"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -79,6 +79,44 @@ export function NewsTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="divide-y divide-border md:hidden">
+        {items.map((i) => (
+          <article key={i.id} className="flex gap-3 p-4">
+            <img
+              src={i.image}
+              alt=""
+              className="size-16 shrink-0 rounded-lg object-cover"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <p className="min-w-0 truncate font-medium leading-5">
+                  {i.title}
+                </p>
+                <StatusBadge status={i.status} />
+              </div>
+              <p className="mt-1.5 truncate text-xs text-muted-foreground">
+                {i.category} · {i.date}
+              </p>
+              <div className="mt-2.5 flex gap-1">
+                <button
+                  aria-label={`${i.title} засах`}
+                  onClick={() => onEdit(i)}
+                  className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98]"
+                >
+                  <Pencil size={16} />
+                </button>
+                <button
+                  aria-label={`${i.title} устгах`}
+                  onClick={() => onDelete(i.id, i.title)}
+                  className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive active:scale-[0.98]"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   );

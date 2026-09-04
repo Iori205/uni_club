@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getAllNews, getNewsById } from "../../../lib/news-data";
 import { NewsCardCompact } from "../../../_components/news/news-card";
-import { SafeImage } from "../../../_components/ui/safe-image";
+import { LightboxImage } from "../../../_components/ui/lightbox-image";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -28,7 +28,7 @@ export default async function NewsDetailPage({ params }: Props) {
   return (
     <>
       <article className="border-b border-border bg-background relative">
-        <div className="mx-auto max-w-3xl px-5 pt-2 pb-14 lg:px-8 lg:pt-3 lg:pb-16">
+        <div className="mx-auto max-w-3xl px-5 pt-2 pb-10 sm:pb-14 lg:px-8 lg:pt-3 lg:pb-16">
           <Link
             href="/news"
             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-8 md:left-14"
@@ -48,10 +48,11 @@ export default async function NewsDetailPage({ params }: Props) {
             {item.title}
           </h1>
 
-          <SafeImage
+          <LightboxImage
             src={item.image}
             alt={item.alt}
             className="mt-8 aspect-3/2 w-full rounded-2xl object-cover"
+            roundedClassName="rounded-2xl"
           />
 
           <p className="mt-8 text-pretty text-base leading-relaxed text-foreground/90">

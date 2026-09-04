@@ -52,14 +52,14 @@ export function EventView({
         </div>
         <button
           onClick={onCreate}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-[background-color,transform] active:scale-[0.98] sm:w-auto"
         >
           <Plus size={18} />
           Арга хэмжээ нэмэх
         </button>
       </div>
       <div className="mt-8 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row">
-        <label className="flex h-10 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
+        <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
           <Search size={17} />
           <input
             value={query}
@@ -67,19 +67,19 @@ export function EventView({
               setQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none"
             placeholder="Арга хэмжээ хайх..."
             aria-label="Арга хэмжээ хайх"
           />
         </label>
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <select
             value={status}
             onChange={(e) => {
               setStatus(e.target.value as "Бүгд" | Status);
               setPage(1);
             }}
-            className="h-10 appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm"
+            className="h-10 w-full appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm sm:w-auto"
           >
             <option>Бүгд</option>
             <option>Нийтлэгдсэн</option>
@@ -135,14 +135,14 @@ export function EventView({
                       <button
                         onClick={() => onEdit(item)}
                         aria-label={`${item.title} засах`}
-                        className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
+                        className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-primary active:scale-[0.98]"
                       >
                         <Pencil size={16} />
                       </button>
                       <button
                         onClick={() => onDelete(item.id, item.title)}
                         aria-label={`${item.title} устгах`}
-                        className="rounded-md p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive active:scale-[0.98]"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -177,14 +177,14 @@ export function EventView({
                 <div className="mt-2 flex gap-1">
                   <button
                     onClick={() => onEdit(item)}
-                    className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary"
+                    className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98]"
                     aria-label="Засах"
                   >
                     <Pencil size={15} />
                   </button>
                   <button
                     onClick={() => onDelete(item.id, item.title)}
-                    className="rounded-md p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                    className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive active:scale-[0.98]"
                     aria-label="Устгах"
                   >
                     <Trash2 size={15} />
@@ -216,7 +216,7 @@ export function EventView({
             <button
               disabled={page === 1}
               onClick={() => setPage(page - 1)}
-              className="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-40"
+              className="min-h-11 rounded-lg border border-border px-3 py-2 text-sm transition-[background-color,transform] active:scale-[0.98] disabled:opacity-40"
             >
               Өмнөх
             </button>
@@ -226,7 +226,7 @@ export function EventView({
             <button
               disabled={page === pages}
               onClick={() => setPage(page + 1)}
-              className="rounded-lg border border-border px-3 py-2 text-sm disabled:opacity-40"
+              className="min-h-11 rounded-lg border border-border px-3 py-2 text-sm transition-[background-color,transform] active:scale-[0.98] disabled:opacity-40"
             >
               Дараах
             </button>

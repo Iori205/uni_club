@@ -8,20 +8,20 @@ const STATS = [
 export function StatsSection() {
   return (
     <section className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-16">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-16">
         <p className="text-center text-xs font-semibold uppercase tracking-[0.15em] text-primary">
           БСОН тоон мэдээлэл
         </p>
-        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-9 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
           {STATS.map((stat) => (
             <div
               key={stat.label}
-              className="rounded-2xl border border-border bg-card px-6 py-8 text-center shadow-sm"
+              className="min-w-0 max-w-full rounded-2xl border border-border bg-card px-3 py-5 text-center shadow-sm sm:px-6 sm:py-8"
             >
-              <div className="font-serif text-4xl font-bold text-primary lg:text-5xl">
+              <div className="font-serif text-2xl font-bold text-primary sm:text-4xl lg:text-5xl">
                 {stat.value}
               </div>
-              <p className="mt-3 text-pretty text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-1.5 text-pretty text-xs leading-relaxed text-muted-foreground sm:mt-3 sm:text-sm">
                 {stat.label}
               </p>
             </div>

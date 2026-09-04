@@ -63,7 +63,7 @@ export function ImageUploadField({ value, onChange, alt }: ImageUploadFieldProps
           type="button"
           onClick={openPicker}
           disabled={uploading}
-          className="group relative block h-32 w-full overflow-hidden rounded-lg border border-input disabled:opacity-60"
+          className="group relative block h-32 w-full max-w-full overflow-hidden rounded-lg border border-input transition-transform active:scale-[0.99] disabled:opacity-60"
         >
           <img
             src={value}
@@ -83,7 +83,7 @@ export function ImageUploadField({ value, onChange, alt }: ImageUploadFieldProps
           type="button"
           onClick={openPicker}
           disabled={uploading}
-          className="flex h-32 w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary disabled:opacity-60"
+          className="flex h-32 w-full max-w-full flex-col items-center justify-center gap-1.5 rounded-lg border border-dashed border-border text-muted-foreground transition-[color,border-color,transform] hover:border-primary hover:text-primary active:scale-[0.99] disabled:opacity-60"
         >
           <ImagePlus size={22} />
           <span className="text-xs font-medium">

@@ -20,7 +20,7 @@ export function NewsSectionLive({ initialNews }: { initialNews: NewsItem[] }) {
   return (
     <>
       {preview.length > 0 && (
-        <div className="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-9 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {preview.map((item) => (
             <NewsCard key={item.id} item={item} />
           ))}

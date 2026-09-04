@@ -34,19 +34,19 @@ export function MemberView({
         </div>
         <button
           onClick={onCreate}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-[background-color,transform] active:scale-[0.98] sm:w-auto"
         >
           <Plus size={18} />
           Шинэ гишүүн
         </button>
       </div>
       <div className="mt-8 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row">
-        <label className="flex h-10 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
+        <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
           <Search size={17} />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none"
             placeholder="Гишүүн хайх..."
             aria-label="Гишүүн хайх"
           />

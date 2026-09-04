@@ -35,28 +35,28 @@ export function NewsView({
         </div>
         <button
           onClick={onCreate}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-[background-color,transform] active:scale-[0.98] sm:w-auto"
         >
           <Plus size={18} />
           Шинэ мэдээ
         </button>
       </div>
       <div className="mt-8 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row">
-        <label className="flex h-10 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
+        <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
           <Search size={17} />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none"
             placeholder="Мэдээ хайх..."
             aria-label="Мэдээ хайх"
           />
         </label>
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as "Бүгд" | Status)}
-            className="h-10 appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm outline-none"
+            className="h-10 w-full appearance-none rounded-lg border border-input bg-background pl-3 pr-9 text-sm outline-none sm:w-auto"
           >
             <option>Бүгд</option>
             <option>Нийтлэгдсэн</option>

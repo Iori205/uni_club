@@ -28,7 +28,7 @@ const DEPARTMENTS = [
 export function DepartmentsSection() {
   return (
     <section id="departments" className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-20">
         <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
           Хэлтсүүд
         </p>
@@ -36,7 +36,7 @@ export function DepartmentsSection() {
           Байгууллага хэрхэн ажилладаг вэ
         </h2>
 
-        <div className="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-9 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {DEPARTMENTS.map((dept) => {
             const content = (
               <>
@@ -59,14 +59,14 @@ export function DepartmentsSection() {
               <Link
                 key={dept.title}
                 href={dept.href}
-                className="rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="min-w-0 max-w-full rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 {content}
               </Link>
             ) : (
               <article
                 key={dept.title}
-                className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="min-w-0 max-w-full rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md"
               >
                 {content}
               </article>

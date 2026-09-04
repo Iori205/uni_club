@@ -24,7 +24,7 @@ export function SafeImage({ src, alt, className }: SafeImageProps) {
         role="img"
         aria-label={alt}
         className={cn(
-          "flex items-center justify-center bg-secondary text-muted-foreground",
+          "max-w-full flex items-center justify-center bg-secondary text-muted-foreground",
           className,
         )}
       >
@@ -37,7 +37,7 @@ export function SafeImage({ src, alt, className }: SafeImageProps) {
     <img
       src={src}
       alt={alt}
-      className={className}
+      className={cn("max-w-full", className)}
       onError={() => setFailed(true)}
     />
   );

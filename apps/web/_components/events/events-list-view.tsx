@@ -14,14 +14,14 @@ import { Pagination } from "../ui/pagination";
 import { useRealtimeRefresh } from "../../lib/use-realtime-refresh";
 
 const PAGE_SIZE = 6;
-type TimeFilter = "Бүгд" | "Ирээдүйн" | "Өнгөрсөн";
+type TimeFilter = "Болох гэж буй" | "Болоод өнгөрсөн";
 
 export function EventsListView() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>("Бүгд");
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("Болох гэж буй");
   const [page, setPage] = useState(1);
 
   const loadEvents = useCallback((options?: { silent?: boolean }) => {
@@ -52,7 +52,10 @@ export function EventsListView() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const now = new Date();
+    // Event-ийн бодит (Монгол хэлний) огноогоор өдрийн түвшинд харьцуулна — өнөөдөр
+    // болох event ямар ч цагт "Болох гэж буй" ангилалд үлдэнэ (одоогийн цаг хамаарахгүй).
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
     return events.filter((item) => {
       const matchesQuery =
         q === "" ||
@@ -60,11 +63,12 @@ export function EventsListView() {
         item.location.toLowerCase().includes(q);
 
       if (!matchesQuery) return false;
-      if (timeFilter === "Бүгд") return true;
 
       const eventDate = parseMongolianDate(item.date);
       if (!eventDate) return true; // огноог задлан унших боломжгүй бол шүүлтээс хассангүй
-      return timeFilter === "Ирээдүйн" ? eventDate >= now : eventDate < now;
+      return timeFilter === "Болох гэж буй"
+        ? eventDate >= startOfToday
+        : eventDate < startOfToday;
     });
   }, [events, query, timeFilter]);
 
@@ -74,7 +78,7 @@ export function EventsListView() {
   return (
     <>
       <section className="border-b border-border bg-background">
-        <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-16">
+        <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
             Арга хэмжээ
           </p>
@@ -101,7 +105,7 @@ export function EventsListView() {
               aria-label="Арга хэмжээ хайх"
               className="h-11 w-full rounded-full border border-border bg-card px-5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none sm:w-[420px] lg:w-[480px]"
             />
-            <div className="relative shrink-0">
+            <div className="relative max-w-full min-w-0 shrink-0">
               <select
                 value={timeFilter}
                 onChange={(event) => {
@@ -109,11 +113,10 @@ export function EventsListView() {
                   setPage(1);
                 }}
                 aria-label="Хугацаагаар шүүх"
-                className="h-11 appearance-none rounded-full border border-border bg-card py-2 pl-5 pr-10 text-sm text-foreground focus:border-primary focus:outline-none"
+                className="h-11 max-w-full appearance-none truncate rounded-full border border-border bg-card py-2 pl-5 pr-10 text-sm text-foreground focus:border-primary focus:outline-none"
               >
-                <option value="Бүгд">Бүгд</option>
-                <option value="Ирээдүйн">Ирээдүйн</option>
-                <option value="Өнгөрсөн">Өнгөрсөн</option>
+                <option value="Болох гэж буй">Болох гэж буй</option>
+                <option value="Болоод өнгөрсөн">Болоод өнгөрсөн</option>
               </select>
               <ChevronDown
                 className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"

@@ -21,7 +21,7 @@ export function MemberTable({
     );
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className="overflow-x-auto">
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[700px] text-left">
           <thead className="border-b border-border bg-secondary/50">
             <tr className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -63,14 +63,14 @@ export function MemberTable({
                     <button
                       aria-label={`${i.name} засах`}
                       onClick={() => onEdit(i)}
-                      className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-primary"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-primary active:scale-[0.98]"
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       aria-label={`${i.name} устгах`}
                       onClick={() => onDelete(i.id, i.name)}
-                      className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-destructive"
+                      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive active:scale-[0.98]"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -80,6 +80,48 @@ export function MemberTable({
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="divide-y divide-border md:hidden">
+        {items.map((i) => (
+          <article key={i.id} className="flex items-center gap-3 p-4">
+            {i.image ? (
+              <img
+                src={i.image}
+                alt=""
+                className="size-14 shrink-0 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+                <Users size={18} />
+              </div>
+            )}
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-medium leading-5">{i.name}</p>
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                {i.role}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Эрэмбэ: {i.sortOrder}
+              </p>
+            </div>
+            <div className="flex shrink-0 gap-1">
+              <button
+                aria-label={`${i.name} засах`}
+                onClick={() => onEdit(i)}
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98]"
+              >
+                <Pencil size={16} />
+              </button>
+              <button
+                aria-label={`${i.name} устгах`}
+                onClick={() => onDelete(i.id, i.name)}
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-destructive active:scale-[0.98]"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </article>
+        ))}
       </div>
     </div>
   );

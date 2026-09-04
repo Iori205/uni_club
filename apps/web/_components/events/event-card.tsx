@@ -5,14 +5,16 @@ import { SafeImage } from "../ui/safe-image";
 
 export function EventCard({ item }: { item: EventItem }) {
   return (
-    <article className="grid overflow-hidden rounded-2xl border border-border bg-card shadow-sm md:grid-cols-[minmax(0,340px)_1fr]">
-      <SafeImage
-        src={item.image}
-        alt={item.alt}
-        className="h-48 w-full object-cover md:h-56"
-      />
-      <div className="p-6 lg:p-8">
-        <div className="flex flex-wrap items-center gap-x-10 gap-y-2 text-sm text-foreground/80">
+    <article className="group grid min-w-0 max-w-full grid-cols-1 overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-[box-shadow,transform] duration-500 ease-out hover:-translate-y-1 hover:shadow-md motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:grid-cols-[minmax(0,340px)_1fr]">
+      <div className="min-w-0 overflow-hidden">
+        <SafeImage
+          src={item.image}
+          alt={item.alt}
+          className="h-48 w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100 md:h-56"
+        />
+      </div>
+      <div className="min-w-0 p-5 sm:p-6 lg:p-8">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-foreground/80 sm:gap-x-10">
           <span className="inline-flex items-center gap-2">
             <Calendar className="size-4 text-primary" />
             {item.date}
@@ -26,10 +28,10 @@ export function EventCard({ item }: { item: EventItem }) {
             {item.location}
           </span>
         </div>
-        <h3 className="mt-3 font-serif text-xl font-bold text-foreground">
+        <h3 className="mt-3 line-clamp-2 font-serif text-xl font-bold text-foreground">
           {item.title}
         </h3>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mt-2 line-clamp-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
           {item.excerpt}
         </p>
         <LinkButton

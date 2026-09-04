@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import type { MemberItem } from "../../../lib/admin/types";
 import { ImageUploadField } from "../shared/image-upload-field";
+import { Modal } from "../../ui/modal";
 
 type Props = {
   item: MemberItem | null;
@@ -20,6 +21,8 @@ export function MemberFormModal({ item, onClose, onSave }: Props) {
     sortOrder: item?.sortOrder ?? 0,
   });
   const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(true);
+  const requestClose = () => setOpen(false);
   useEffect(() => {
     setForm({
       image: item?.image ?? "",
@@ -38,15 +41,14 @@ export function MemberFormModal({ item, onClose, onSave }: Props) {
     setSaving(false);
   };
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/30 p-4">
-      <div
-        className="scrollbar-hide max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-border bg-card p-6 shadow-xl"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="member-form-title"
-      >
-        <div className="flex items-start justify-between">
-          <div>
+    <Modal
+      open={open}
+      onClose={requestClose}
+      onExited={onClose}
+      labelledBy="member-form-title"
+    >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">
               Удирдах зөвлөл
             </p>
@@ -58,9 +60,9 @@ export function MemberFormModal({ item, onClose, onSave }: Props) {
             </h2>
           </div>
           <button
-            onClick={onClose}
+            onClick={requestClose}
             aria-label="Хаах"
-            className="rounded-lg p-2 text-muted-foreground hover:bg-secondary"
+            className="flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98]"
           >
             <X size={18} />
           </button>
@@ -112,23 +114,22 @@ export function MemberFormModal({ item, onClose, onSave }: Props) {
             />
           </label>
         </div>
-        <div className="mt-7 flex justify-end gap-3">
+        <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <button
-            onClick={onClose}
-            className="rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground hover:bg-secondary"
+            onClick={requestClose}
+            className="min-h-11 w-full rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98] sm:w-auto"
           >
             Цуцлах
           </button>
           <button
             disabled={saving || !form.name.trim() || !form.role.trim()}
             onClick={submit}
-            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+            className="min-h-11 w-full rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-[background-color,transform] active:scale-[0.98] disabled:opacity-50 sm:w-auto"
           >
             {saving ? "Хадгалж байна..." : "Хадгалах"}
           </button>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
 export default MemberFormModal;

@@ -8,7 +8,7 @@ export async function NewsSection() {
 
   return (
     <section id="news" className="border-t border-border bg-background">
-      <div className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:py-14 lg:px-8 lg:py-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
@@ -20,10 +20,10 @@ export async function NewsSection() {
           </div>
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-primary"
+            className="group inline-flex items-center gap-2 text-sm font-medium text-foreground transition-colors hover:text-primary"
           >
             Бүх мэдээ
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4 transition-transform duration-300 ease-out group-hover:translate-x-1 motion-reduce:transition-none" />
           </Link>
         </div>
 

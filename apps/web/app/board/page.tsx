@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getBoardMembers } from "../../lib/board-data";
-import { SafeImage } from "../../_components/ui/safe-image";
+import { LightboxImage } from "../../_components/ui/lightbox-image";
 import { EmptyState } from "../../_components/ui/empty-state";
 
 export const metadata: Metadata = {
@@ -12,9 +12,7 @@ export const metadata: Metadata = {
 
 export default async function BoardPage() {
   const members = await getBoardMembers().catch(() => []);
-  const chairman = members.find(
-    (m) => m.role === "Удирдах зөвлөлийн тэргүүн",
-  );
+  const chairman = members.find((m) => m.role === "Тэргүүн");
   const viceChairman = members.find((m) => m.role === "Дэд тэргүүн");
   const leadNames = new Set(
     [chairman?.name, viceChairman?.name].filter(Boolean),
@@ -26,10 +24,10 @@ export default async function BoardPage() {
 
   return (
     <section className="relative bg-background">
-      <div className="mx-auto max-w-5xl px-5 pt-6 pb-14 lg:px-8 lg:pt-6 lg:pb-16">
+      <div className="mx-auto max-w-5xl px-5 pt-4 pb-10 sm:pb-14 md:pt-6 lg:px-8 lg:pb-16">
         <Link
           href="/#departments"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-8 md:left-14"
+          className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-2 md:left-14 md:mb-0"
         >
           <ArrowLeft className="size-4" />
           Буцах
@@ -49,16 +47,18 @@ export default async function BoardPage() {
         ) : (
           <>
             {leads.length > 0 && (
-              <div className="mt-9 grid gap-5 sm:grid-cols-2">
+              <div className="mt-9 grid grid-cols-1 gap-5 md:grid-cols-2">
                 {leads.map((member) => (
                   <article
                     key={member.name}
-                    className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card p-5 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:text-left"
+                    className="flex min-w-0 max-w-full flex-col items-center gap-4 rounded-2xl border border-border bg-card p-5 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:flex-row md:items-center md:text-left"
                   >
-                    <SafeImage
+                    <LightboxImage
                       src={member.image}
                       alt={`${member.name} — ${member.role}`}
-                      className="size-20 shrink-0 rounded-full object-cover sm:size-24"
+                      className="size-20 shrink-0 rounded-full object-cover md:size-24"
+                      roundedClassName="rounded-full"
+                      fit="content"
                     />
                     <div className="min-w-0">
                       <h3 className="font-serif text-lg font-bold text-foreground">
@@ -77,16 +77,18 @@ export default async function BoardPage() {
             )}
 
             {restMembers.length > 0 && (
-              <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
                 {restMembers.map((member) => (
                   <article
                     key={member.name}
-                    className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:flex-row sm:items-center sm:text-left"
+                    className="flex min-w-0 max-w-full flex-col items-center gap-3 rounded-2xl border border-border bg-card p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md md:flex-row md:items-center md:text-left"
                   >
-                    <SafeImage
+                    <LightboxImage
                       src={member.image}
                       alt={`${member.name} — ${member.role}`}
                       className="size-14 shrink-0 rounded-full object-cover"
+                      roundedClassName="rounded-full"
+                      fit="content"
                     />
                     <div className="min-w-0">
                       <h3 className="font-serif text-base font-bold text-foreground">

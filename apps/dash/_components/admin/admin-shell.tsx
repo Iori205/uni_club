@@ -10,6 +10,7 @@ import type {
 } from "../../lib/admin/types";
 import { useAuthedFetch } from "../../lib/use-authed-fetch";
 import { normalizeStatus } from "../../lib/admin/normalize-status";
+import { useToast } from "../ui/toast";
 import { AdminSidebar } from "./admin-sidebar";
 import { AdminHeader } from "./admin-header";
 import { DashboardHome } from "./dashboard-home";
@@ -33,6 +34,7 @@ type ListResponse<T> = { items: T[] };
 export function AdminShell() {
   const { isLoaded } = useAuth();
   const authedFetch = useAuthedFetch();
+  const { showToast } = useToast();
   const [active, setActive] = useState<Section>("dashboard");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [news, setNews] = useState<ContentItem[]>([]);
@@ -107,8 +109,10 @@ export function AdminShell() {
         setNews((items) => [created, ...items]);
       }
       setModal(null);
+      showToast("Өөрчлөлт амжилттай хадгалагдлаа");
     } catch {
       setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+      showToast("Алдаа гарлаа. Дахин оролдоно уу.", "error");
     }
   };
 
@@ -131,8 +135,10 @@ export function AdminShell() {
         setEvents((items) => [created, ...items]);
       }
       setModal(null);
+      showToast("Өөрчлөлт амжилттай хадгалагдлаа");
     } catch {
       setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+      showToast("Алдаа гарлаа. Дахин оролдоно уу.", "error");
     }
   };
 
@@ -160,8 +166,10 @@ export function AdminShell() {
         );
       }
       setModal(null);
+      showToast("Өөрчлөлт амжилттай хадгалагдлаа");
     } catch {
       setActionError("Хадгалахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+      showToast("Алдаа гарлаа. Дахин оролдоно уу.", "error");
     }
   };
 
@@ -183,8 +191,10 @@ export function AdminShell() {
         await authedFetch(`/admin/news/${id}`, { method: "DELETE" });
         setNews((items) => items.filter((i) => i.id !== id));
       }
+      showToast("Амжилттай устгалаа");
     } catch {
       setActionError("Устгахад алдаа гарлаа. Дараа дахин оролдоно уу.");
+      showToast("Алдаа гарлаа. Дахин оролдоно уу.", "error");
     } finally {
       setPendingDelete(null);
     }
@@ -210,6 +220,7 @@ export function AdminShell() {
         <AdminHeader
           title={labels[active]}
           onMenu={() => setMobileOpen(true)}
+          mobileOpen={mobileOpen}
         />
         <main className="mx-auto max-w-7xl px-5 py-8 md:px-8 md:py-10">
           {actionError && (
@@ -225,7 +236,7 @@ export function AdminShell() {
               хуудсаа дахин ачаална уу.
             </p>
           ) : (
-            <>
+            <div key={active} className="page-transition">
               {active === "dashboard" && (
                 <DashboardHome
                   news={news}
@@ -260,7 +271,7 @@ export function AdminShell() {
                   onDelete={(id, label) => requestDelete("Гишүүн", id, label)}
                 />
               )}
-            </>
+            </div>
           )}
         </main>
       </div>

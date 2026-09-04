@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Clock, MapPin } from "lucide-react";
 import { getEventById } from "../../../lib/events-data";
-import { SafeImage } from "../../../_components/ui/safe-image";
+import { LightboxImage } from "../../../_components/ui/lightbox-image";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -23,7 +23,7 @@ export default async function EventDetailPage({ params }: Props) {
 
   return (
     <article className="bg-background relative">
-      <div className="mx-auto max-w-3xl px-5 pt-2 pb-14 lg:px-8 lg:pt-3 lg:pb-16">
+      <div className="mx-auto max-w-3xl px-5 pt-2 pb-10 sm:pb-14 lg:px-8 lg:pt-3 lg:pb-16">
         <Link
           href="/events"
           className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary md:absolute md:top-8 md:left-14"
@@ -51,10 +51,11 @@ export default async function EventDetailPage({ params }: Props) {
           </span>
         </div>
 
-        <SafeImage
+        <LightboxImage
           src={item.image}
           alt={item.alt}
           className="mt-8 h-64 w-full rounded-2xl object-cover lg:h-80"
+          roundedClassName="rounded-2xl"
         />
 
         <p className="mt-8 text-pretty text-base leading-relaxed text-foreground/90">
