@@ -108,13 +108,13 @@ export function EventView({
               {visible.map((item) => (
                 <tr key={item.id} className="hover:bg-secondary/30">
                   <td className="px-5 py-4">
-                    <img
-                      src={item.image}
-                      alt={item.alt}
-                      width={56}
-                      height={56}
-                      className="size-14 rounded-lg object-cover"
-                    />
+                    <div className="size-14 shrink-0 overflow-hidden rounded-lg">
+                      <img
+                        src={item.image}
+                        alt={item.alt}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
                   </td>
                   <td className="max-w-xs truncate px-5 py-4 font-medium text-foreground">
                     {item.title}
@@ -158,13 +158,13 @@ export function EventView({
         <div className="divide-y divide-border md:hidden">
           {visible.map((item) => (
             <article key={item.id} className="flex gap-3 p-4">
-              <img
-                src={item.image}
-                alt={item.alt}
-                width={80}
-                height={80}
-                className="size-20 shrink-0 rounded-lg object-cover"
-              />
+              <div className="size-20 shrink-0 overflow-hidden rounded-lg">
+                <img
+                  src={item.image}
+                  alt={item.alt}
+                  className="h-full w-full object-cover"
+                />
+              </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="min-w-0 truncate font-medium leading-5">

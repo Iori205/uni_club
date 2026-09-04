@@ -99,14 +99,16 @@ export function DashboardHome({
               className="flex min-w-0 items-center gap-3 border-t border-border pt-3"
             >
               {i.image ? (
-                <img
-                  src={i.image}
-                  alt=""
-                  className="size-12 shrink-0 rounded-lg object-cover"
-                  onError={(e) => {
-                    e.currentTarget.style.display = "none";
-                  }}
-                />
+                <div className="size-12 shrink-0 overflow-hidden rounded-lg">
+                  <img
+                    src={i.image}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                </div>
               ) : (
                 <div className="size-12 shrink-0 rounded-lg bg-secondary" />
               )}

@@ -38,13 +38,13 @@ export function NewsTable({
               <tr key={i.id} className="group hover:bg-secondary/30">
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <img
-                      src={i.image}
-                      alt=""
-                      width={48}
-                      height={48}
-                      className="size-12 rounded-lg object-cover"
-                    />
+                    <div className="size-12 shrink-0 overflow-hidden rounded-lg">
+                      <img
+                        src={i.image}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
                     <p className="max-w-[360px] truncate text-sm font-medium">
                       {i.title}
                     </p>
@@ -85,13 +85,13 @@ export function NewsTable({
       <div className="divide-y divide-border md:hidden">
         {items.map((i) => (
           <article key={i.id} className="flex gap-3 p-4">
-            <img
-              src={i.image}
-              alt=""
-              width={64}
-              height={64}
-              className="size-16 shrink-0 rounded-lg object-cover"
-            />
+            <div className="size-16 shrink-0 overflow-hidden rounded-lg">
+              <img
+                src={i.image}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
                 <p className="min-w-0 truncate font-medium leading-5">
