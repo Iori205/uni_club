@@ -29,6 +29,20 @@ function assertRequiredProductionEnv(): void {
   }
 }
 
+/**
+ * `WEB_ORIGIN`/`DASH_ORIGIN`-ийг таслалаар тусгаарласан хэд хэдэн origin-той байхыг
+ * зөвшөөрнө (жишээ нь custom domain + Vercel-ийн өгсөн `*.vercel.app` URL зэрэг олон
+ * үнэхээр хүчинтэй frontend origin зэрэг ажиллаж байх тохиолдол). Нэг утгатай хэвээр байсан
+ * ч (таслалгүй) хуучин конфигурацитай бүрэн нийцтэй хэвээр.
+ */
+function parseOrigins(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 /** `main.ts` (local/persistent server) болон `api/index.ts` (Vercel serverless handler) хоёулаа энэ нэг bootstrap-ыг ашиглана. */
 export async function createApp(): Promise<NestExpressApplication> {
   assertRequiredProductionEnv();
@@ -36,9 +50,10 @@ export async function createApp(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: [process.env.WEB_ORIGIN, process.env.DASH_ORIGIN].filter(
-      Boolean,
-    ) as string[],
+    origin: [
+      ...parseOrigins(process.env.WEB_ORIGIN),
+      ...parseOrigins(process.env.DASH_ORIGIN),
+    ],
   });
 
   app.useGlobalPipes(
