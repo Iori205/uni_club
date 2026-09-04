@@ -19,7 +19,13 @@ export function ConfirmDialog({
   onCancel: () => void;
 }) {
   const [open, setOpen] = useState(true);
+  const [confirming, setConfirming] = useState(false);
   const requestClose = () => setOpen(false);
+  const handleConfirm = () => {
+    if (confirming) return; // давхар дарахаас сэргийлнэ — ижил ID рүү 2 удаа DELETE илгээхгүй
+    setConfirming(true);
+    onConfirm();
+  };
 
   return (
     <Modal
@@ -46,16 +52,18 @@ export function ConfirmDialog({
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <button
           onClick={requestClose}
-          className="min-h-11 rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98]"
+          disabled={confirming}
+          className="min-h-11 rounded-lg px-4 py-2.5 text-sm font-semibold text-muted-foreground transition-colors hover:bg-secondary active:scale-[0.98] disabled:opacity-50"
         >
           {cancelLabel}
         </button>
         <button
-          onClick={onConfirm}
+          onClick={handleConfirm}
+          disabled={confirming}
           autoFocus
-          className="min-h-11 rounded-lg bg-destructive px-4 py-2.5 text-sm font-semibold text-destructive-foreground transition-colors hover:bg-destructive/90 active:scale-[0.98]"
+          className="min-h-11 rounded-lg bg-destructive px-4 py-2.5 text-sm font-semibold text-destructive-foreground transition-colors hover:bg-destructive/90 active:scale-[0.98] disabled:opacity-50"
         >
-          {confirmLabel}
+          {confirming ? "Устгаж байна..." : confirmLabel}
         </button>
       </div>
     </Modal>

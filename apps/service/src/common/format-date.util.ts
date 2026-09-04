@@ -19,10 +19,16 @@ const MONTH_ORDINAL_SUFFIX = [
   'дугаар', // 12
 ];
 
+/**
+ * `date` талбар нь огноо-цагийн mark биш, зөвхөн "огноо" (`new Date("2026-09-18")` маягаар
+ * UTC-midnight-ээр parse хийгддэг) утга хадгалдаг тул үргэлж UTC-ийн getter-үүдээр унших
+ * ёстой. Local (сервэрийн) timezone-ий getter ашиглавал сервэр UTC-ээс өмнөх timezone-д
+ * ажиллаж байх үед огноо ±1 хоногоор буруу шилждэг байсан — эндээс сэргийлнэ.
+ */
 export function formatMongolianDate(date: Date): string {
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth() + 1;
+  const day = date.getUTCDate();
   const suffix = MONTH_ORDINAL_SUFFIX[month - 1];
   return `${year} оны ${month} ${suffix} сарын ${day}`;
 }

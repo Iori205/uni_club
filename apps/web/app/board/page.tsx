@@ -8,6 +8,12 @@ import { EmptyState } from "../../_components/ui/empty-state";
 export const metadata: Metadata = {
   title: "Удирдах зөвлөл | БСОН",
   description: "БСОН-ы удирдах зөвлөлийн гишүүдийн танилцуулга.",
+  alternates: { canonical: "/board" },
+  openGraph: {
+    title: "Удирдах зөвлөл | БСОН",
+    description: "БСОН-ы удирдах зөвлөлийн гишүүдийн танилцуулга.",
+    url: "/board",
+  },
 };
 
 export default async function BoardPage() {

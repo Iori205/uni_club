@@ -1,4 +1,16 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+const configuredApiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+// Production дээр `NEXT_PUBLIC_API_URL` тохируулаагүй бол чимээгүй localhost руу унахын
+// оронд шууд, тодорхой алдаа шидье — эс бөгөөс production build нь admin-ий бүх API
+// дуудлагыг (auth-той хамт) хэзээ ч хүрэхгүй `localhost:3000` руу илгээсэн хэвээр
+// "амжилттай" deploy болчих эрсдэлтэй. Development дээр localhost fallback хэвээр байна.
+if (!configuredApiUrl && process.env.NODE_ENV === "production") {
+  throw new Error(
+    "NEXT_PUBLIC_API_URL орчны хувьсагч тохируулаагүй байна. Энэ нь production build/runtime-д заавал шаардлагатай.",
+  );
+}
+
+const API_URL = configuredApiUrl ?? "http://localhost:3000";
 
 export class ApiError extends Error {
   constructor(

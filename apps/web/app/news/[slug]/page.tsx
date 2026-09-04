@@ -14,7 +14,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const item = await getNewsById(slug);
   if (!item) return { title: "Мэдээ олдсонгүй | БСОН" };
-  return { title: `${item.title} | БСОН`, description: item.excerpt };
+
+  const title = `${item.title} | БСОН`;
+  const ogImage = item.image || "/images/hero.jpg";
+  return {
+    title,
+    description: item.excerpt,
+    alternates: { canonical: `/news/${item.id}` },
+    openGraph: {
+      type: "article",
+      title,
+      description: item.excerpt,
+      url: `/news/${item.id}`,
+      images: [{ url: ogImage }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: item.excerpt,
+      images: [ogImage],
+    },
+  };
 }
 
 export default async function NewsDetailPage({ params }: Props) {

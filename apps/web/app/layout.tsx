@@ -20,13 +20,38 @@ const ptSerif = PT_Serif({
   display: "swap",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001";
+const SITE_NAME = "БСОН";
+const DEFAULT_TITLE = "БСОН — Бизнесийн сургуулийн оюутны нэгдэл | МУИС";
+const DEFAULT_DESCRIPTION =
+  "МУИС-ийн Бизнесийн сургуулийн оюутны нэгдэл. Судалгаа, манлайлал, мэргэжлийн туршлага дээр суурилсан оюутны байгууллага.";
+
 export const metadata: Metadata = {
-  title: "БСОН — Бизнесийн сургуулийн оюутны нэгдэл | МУИС",
-  description:
-    "МУИС-ийн Бизнесийн сургуулийн оюутны нэгдэл. Судалгаа, манлайлал, мэргэжлийн туршлага дээр суурилсан оюутны байгууллага.",
+  metadataBase: new URL(SITE_URL),
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
+  alternates: {
+    canonical: "/",
+  },
   icons: {
-    icon: "/images/logo.png",
-    apple: "/images/logo.png",
+    icon: "/images/favicon-32.png",
+    shortcut: "/images/favicon-16.png",
+    apple: "/images/apple-icon-180.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "mn_MN",
+    url: "/",
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [{ url: "/images/hero.jpg", width: 1600, height: 1104 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: ["/images/hero.jpg"],
   },
 };
 
