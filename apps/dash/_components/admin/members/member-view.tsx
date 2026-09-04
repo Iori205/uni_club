@@ -46,7 +46,7 @@ export function MemberView({
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full min-w-0 bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none p-2"
             placeholder="Гишүүн хайх..."
             aria-label="Гишүүн хайх"
           />

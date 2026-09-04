@@ -59,7 +59,7 @@ export function EventView({
         </button>
       </div>
       <div className="mt-8 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row">
-        <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
+        <label className="flex h-10 w-full min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
           <Search size={17} />
           <input
             value={query}
@@ -67,7 +67,7 @@ export function EventView({
               setQuery(e.target.value);
               setPage(1);
             }}
-            className="w-full min-w-0 bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none p-2"
             placeholder="Арга хэмжээ хайх..."
             aria-label="Арга хэмжээ хайх"
           />
@@ -111,10 +111,12 @@ export function EventView({
                     <img
                       src={item.image}
                       alt={item.alt}
+                      width={56}
+                      height={56}
                       className="size-14 rounded-lg object-cover"
                     />
                   </td>
-                  <td className="max-w-xs px-5 py-4 font-medium text-foreground">
+                  <td className="max-w-xs truncate px-5 py-4 font-medium text-foreground">
                     {item.title}
                   </td>
                   <td className="whitespace-nowrap px-5 py-4 text-muted-foreground">
@@ -122,9 +124,9 @@ export function EventView({
                     <div className="mt-1 text-xs">{item.time}</div>
                   </td>
                   <td className="max-w-[220px] px-5 py-4 text-muted-foreground">
-                    <span className="flex gap-1.5">
+                    <span className="flex min-w-0 gap-1.5">
                       <MapPin size={15} className="mt-0.5 shrink-0" />
-                      {item.location}
+                      <span className="truncate">{item.location}</span>
                     </span>
                   </td>
                   <td className="px-5 py-4">
@@ -159,20 +161,26 @@ export function EventView({
               <img
                 src={item.image}
                 alt={item.alt}
+                width={80}
+                height={80}
                 className="size-20 shrink-0 rounded-lg object-cover"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-medium leading-5">{item.title}</h3>
+                  <h3 className="min-w-0 truncate font-medium leading-5">
+                    {item.title}
+                  </h3>
                   <StatusBadge status={item.status} />
                 </div>
-                <p className="mt-2 flex gap-1 text-xs text-muted-foreground">
-                  <CalendarDays size={14} />
-                  {item.date} · {item.time}
+                <p className="mt-2 flex min-w-0 gap-1 text-xs text-muted-foreground">
+                  <CalendarDays size={14} className="shrink-0" />
+                  <span className="truncate">
+                    {item.date} · {item.time}
+                  </span>
                 </p>
-                <p className="mt-1 flex gap-1 text-xs text-muted-foreground">
-                  <MapPin size={14} />
-                  {item.location}
+                <p className="mt-1 flex min-w-0 gap-1 text-xs text-muted-foreground">
+                  <MapPin size={14} className="shrink-0" />
+                  <span className="truncate">{item.location}</span>
                 </p>
                 <div className="mt-2 flex gap-1">
                   <button

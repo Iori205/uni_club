@@ -42,12 +42,12 @@ export function NewsView({
         </button>
       </div>
       <div className="mt-8 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 sm:flex-row">
-        <label className="flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
+        <label className="flex h-10 w-full min-w-0 flex-1 items-center gap-2 rounded-lg border border-input bg-background px-3 text-muted-foreground">
           <Search size={17} />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full min-w-0 bg-transparent text-sm outline-none"
+            className="w-full min-w-0 bg-transparent text-sm outline-none p-2"
             placeholder="Мэдээ хайх..."
             aria-label="Мэдээ хайх"
           />
